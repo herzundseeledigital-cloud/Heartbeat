@@ -1,0 +1,11 @@
+#!/bin/sh
+if command -v php >/dev/null 2>&1; then
+    exec php "$@"
+elif [ -x /Applications/XAMPP/xamppfiles/bin/php ]; then
+    exec /Applications/XAMPP/xamppfiles/bin/php "$@"
+elif [ -x /opt/homebrew/bin/php ]; then
+    exec /opt/homebrew/bin/php "$@"
+else
+    echo "Error: PHP binary not found." >&2
+    exit 1
+fi

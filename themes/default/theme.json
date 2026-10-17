@@ -1,0 +1,31 @@
+{
+    "name": "One-Pager Starter Theme",
+    "slug": "one-pager",
+    "version": "1.0.0",
+    "author": "Heartbeat Core Team",
+    "description": "High-conversion modern one-pager theme with smooth scroll, hero CTA, features grid, and honeypot-protected contact form.",
+    "colors": {
+        "primary": "#f97316",
+        "primary_hover": "#ea580c",
+        "background": "#090d16",
+        "card": "#0f172a",
+        "border": "#1e293b",
+        "text": "#f8fafc",
+        "accent": "#38bdf8"
+    },
+    "typography": {
+        "font_family": "Inter",
+        "heading_font": "Inter"
+    },
+    "cpt_blueprints": [],
+    "templates": [
+        "home",
+        "page",
+        "single",
+        "404"
+    ],
+    "settings": {
+        "container_width": "max-w-6xl",
+        "border_radius": "rounded-2xl"
+    }
+}

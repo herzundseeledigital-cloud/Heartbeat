@@ -1,0 +1,33 @@
+# ----------------------------------------------------------------------
+# Heartbeat CMS - Root Shared-Hosting Router & Security Layer
+# ----------------------------------------------------------------------
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block access to hidden files and directories (e.g., .git, .env)
+    RewriteRule ^\.(.*) - [F,L]
+
+    # Block direct HTTP access to protected directories
+    RewriteRule ^(core|config|storage|plugins|themes/.*\.json|vendor|bin)/ - [F,L]
+    RewriteRule ^(composer\.(json|lock)|package\.json|package-lock\.json|tailwind\.config\.js|postcss\.config\.js|PROMPT\.md) - [F,L]
+
+    # If the request is already for /public, let public/.htaccess handle it
+    RewriteCond %{REQUEST_URI} ^/public/ [NC]
+    RewriteRule ^ - [L]
+
+    # If request is for existing file or directory inside /public, rewrite silently
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -d
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # Rewrite all other requests to public/index.php
+    RewriteRule ^(.*)$ public/index.php [QSA,L]
+</IfModule>
+
+# Disable Directory Browsing
+Options -Indexes
+
+# UTF-8 Encoding default
+AddDefaultCharset UTF-8
+

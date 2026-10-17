@@ -1,0 +1,26 @@
+{
+  "name": "heartbeat-cms",
+  "version": "1.0.0",
+  "description": "Heartbeat CMS - Agency-ready Headless/Hybrid CMS",
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "dev:php": "PATH=\"./bin:$PATH\" php -S localhost:8000 -t public router.php",
+    "dev:css": "tailwindcss -i ./src/css/installer.css -o ./public/assets/css/installer.css --watch",
+    "build:css": "tailwindcss -i ./src/css/installer.css -o ./public/assets/css/installer.css --minify",
+    "build:release": "node scripts/build-release.js"
+  },
+  "keywords": [
+    "cms",
+    "php",
+    "tailwind",
+    "agency"
+  ],
+  "author": "Heartbeat Core Team",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}
+

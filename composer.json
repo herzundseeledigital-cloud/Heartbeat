@@ -1,0 +1,27 @@
+{
+    "name": "heartbeat/cms",
+    "description": "Heartbeat CMS - Modern, lightweight, ultra-secure Hybrid/Headless Agency CMS",
+    "type": "project",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Heartbeat Core Team"
+        }
+    ],
+    "require": {
+        "php": ">=8.2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Heartbeat\\": "core/"
+        }
+    },
+    "scripts": {
+        "dev": "php -S localhost:8000 -t public router.php"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}
+

@@ -1,0 +1,35 @@
+{
+  "name": "Classic Real Estate Theme",
+  "slug": "real-estate",
+  "version": "1.0.0",
+  "author": "Heartbeat Core Team",
+  "description": "CPT-powered Property listings with filterable grid (location, price, rooms), gallery lightbox modal, and property-specific inquiry form.",
+  "colors": {
+    "primary": "#059669",
+    "primary_hover": "#047857",
+    "background": "#061a14",
+    "card": "#0a2e23",
+    "border": "#134e3a",
+    "text": "#f0fdf4",
+    "accent": "#34d399"
+  },
+  "typography": {
+    "font_family": "Inter",
+    "heading_font": "Outfit"
+  },
+  "cpt_blueprints": [
+    "property"
+  ],
+  "templates": [
+    "home",
+    "page",
+    "single",
+    "property",
+    "404"
+  ],
+  "settings": {
+    "container_width": "max-w-7xl",
+    "border_radius": "rounded-2xl"
+  }
+}
+

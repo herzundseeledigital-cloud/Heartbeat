@@ -1,0 +1,36 @@
+{
+  "name": "Clean Corporate Theme",
+  "slug": "corporate",
+  "version": "1.0.0",
+  "author": "Heartbeat Core Team",
+  "description": "Multi-page corporate agency layout with team profiles, service grids, case studies, and accessible multi-level navigation.",
+  "colors": {
+    "primary": "#2563eb",
+    "primary_hover": "#1d4ed8",
+    "background": "#0a0f1d",
+    "card": "#0f172a",
+    "border": "#1e293b",
+    "text": "#f8fafc",
+    "accent": "#38bdf8"
+  },
+  "typography": {
+    "font_family": "Inter",
+    "heading_font": "Plus Jakarta Sans"
+  },
+  "cpt_blueprints": [
+    "team_member",
+    "case_study"
+  ],
+  "templates": [
+    "home",
+    "page",
+    "single",
+    "archive",
+    "404"
+  ],
+  "settings": {
+    "container_width": "max-w-6xl",
+    "border_radius": "rounded-xl"
+  }
+}
+

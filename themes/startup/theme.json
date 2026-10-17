@@ -1,0 +1,33 @@
+{
+  "name": "Modern Startup Theme",
+  "slug": "startup",
+  "version": "1.0.0",
+  "author": "Heartbeat Core Team",
+  "description": "Bold modern design with dark/light mode accents, interactive pricing tables (monthly/yearly toggle), and high-conversion hero CTA.",
+  "colors": {
+    "primary": "#8b5cf6",
+    "primary_hover": "#7c3aed",
+    "background": "#0c0a1a",
+    "card": "#16122e",
+    "border": "#271f4d",
+    "text": "#faf5ff",
+    "accent": "#f43f5e"
+  },
+  "typography": {
+    "font_family": "Inter",
+    "heading_font": "Outfit"
+  },
+  "cpt_blueprints": [],
+  "templates": [
+    "home",
+    "page",
+    "single",
+    "pricing",
+    "404"
+  ],
+  "settings": {
+    "container_width": "max-w-6xl",
+    "border_radius": "rounded-2xl"
+  }
+}
+
