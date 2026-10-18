@@ -61,13 +61,21 @@ final class SeoService
         // Canonical URL
         $slug = (string)($post['slug'] ?? '');
         $postType = (string)($post['post_type'] ?? 'page');
-        $canonicalUrl = $slug === 'home' 
-            ? rtrim($siteUrl, '/') . '/' 
-            : rtrim($siteUrl, '/') . '/' . ($postType === 'page' ? $slug : "{$postType}/{$slug}");
+        $customCanonical = (string)($meta['_seo_canonical'] ?? '');
+        if ($customCanonical !== '') {
+            $canonicalUrl = $customCanonical;
+        } else {
+            $canonicalUrl = $slug === 'home' 
+                ? rtrim($siteUrl, '/') . '/' 
+                : rtrim($siteUrl, '/') . '/' . ($postType === 'page' ? $slug : "{$postType}/{$slug}");
+        }
 
         // Robots
-        $noindex = !empty($meta['_seo_noindex']);
-        $robots = $noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+        $globalIndexing = (string)$this->db->fetchColumn("SELECT option_value FROM {prefix}options WHERE option_name = 'seo_indexing'");
+        $isGlobalNoindex = ($globalIndexing === 'noindex');
+        $noindex = $isGlobalNoindex || !empty($meta['_seo_noindex']);
+        $nofollow = $isGlobalNoindex || !empty($meta['_seo_nofollow']);
+        $robots = ($noindex || $nofollow) ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
 
         // Image for OpenGraph
         $ogImage = (string)($meta['_seo_og_image'] ?? '');
@@ -108,6 +116,27 @@ final class SeoService
             $tags[] = "<meta name=\"twitter:image\" content=\"{$eOgImage}\">";
         }
 
+        // Webmaster Verification Tags (Google Search Console & Bing Webmaster)
+        $googleVerification = trim((string)$this->db->fetchColumn("SELECT option_value FROM {prefix}options WHERE option_name = 'seo_google_verification'"));
+        if ($googleVerification !== '') {
+            if (str_starts_with($googleVerification, '<meta')) {
+                $tags[] = $googleVerification;
+            } else {
+                $eGv = Security::e($googleVerification);
+                $tags[] = "<meta name=\"google-site-verification\" content=\"{$eGv}\">";
+            }
+        }
+
+        $bingVerification = trim((string)$this->db->fetchColumn("SELECT option_value FROM {prefix}options WHERE option_name = 'seo_bing_verification'"));
+        if ($bingVerification !== '') {
+            if (str_starts_with($bingVerification, '<meta')) {
+                $tags[] = $bingVerification;
+            } else {
+                $eBv = Security::e($bingVerification);
+                $tags[] = "<meta name=\"msvalidate.01\" content=\"{$eBv}\">";
+            }
+        }
+
         // Automated JSON-LD Schema
         $schema = $this->generateJsonLdSchema($post, $siteTitle, $siteUrl, $canonicalUrl, $seoDesc);
         if ($schema !== '') {
@@ -115,6 +144,28 @@ final class SeoService
         }
 
         return implode("\n    ", $tags);
+    }
+
+    /**
+     * Generate dynamic robots.txt content honoring global indexing setting
+     */
+    public function generateRobotsTxt(): string
+    {
+        $siteUrl = (string)$this->db->fetchColumn("SELECT option_value FROM {prefix}options WHERE option_name = 'site_url'") ?: 'http://localhost:8000';
+        $siteUrl = rtrim($siteUrl, '/');
+        $indexing = (string)$this->db->fetchColumn("SELECT option_value FROM {prefix}options WHERE option_name = 'seo_indexing'");
+
+        $txt = "User-agent: *\n";
+        if ($indexing === 'noindex') {
+            $txt .= "Disallow: /\n";
+        } else {
+            $txt .= "Allow: /\n";
+            $txt .= "Disallow: /admin/\n";
+            $txt .= "Disallow: /install/\n";
+            $txt .= "Sitemap: {$siteUrl}/sitemap.xml\n";
+        }
+
+        return $txt;
     }
 
     /**

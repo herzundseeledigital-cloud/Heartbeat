@@ -113,9 +113,9 @@ final class AnalyticsService
     /**
      * Detect known bots / web crawlers
      */
-    public function isBot(string $userAgent): bool
+    public function isBot(?string $userAgent): bool
     {
-        if ($userAgent === '') return false;
+        if ($userAgent === null || $userAgent === '') return false;
         $ua = strtolower($userAgent);
         $botKeywords = ['bot', 'crawler', 'spider', 'slurp', 'crawling', 'curl', 'wget', 'mediapartners', 'lighthouse', 'headless'];
         foreach ($botKeywords as $kw) {
@@ -148,8 +148,9 @@ final class AnalyticsService
     /**
      * Detect client device category
      */
-    public function detectDevice(string $ua): string
+    public function detectDevice(?string $ua): string
     {
+        if ($ua === null || $ua === '') return 'desktop';
         $lower = strtolower($ua);
         if (str_contains($lower, 'tablet') || str_contains($lower, 'ipad')) {
             return 'tablet';
@@ -163,8 +164,9 @@ final class AnalyticsService
     /**
      * Detect client browser
      */
-    public function detectBrowser(string $ua): string
+    public function detectBrowser(?string $ua): string
     {
+        if ($ua === null || $ua === '') return 'other';
         $lower = strtolower($ua);
         if (str_contains($lower, 'edg/')) return 'edge';
         if (str_contains($lower, 'opr/') || str_contains($lower, 'opera')) return 'opera';
@@ -177,9 +179,9 @@ final class AnalyticsService
     /**
      * Normalize referrer
      */
-    public function cleanReferrer(string $referrer, string $currentHost): string
+    public function cleanReferrer(?string $referrer, string $currentHost): string
     {
-        if ($referrer === '') return 'Direkt / Bookmark';
+        if ($referrer === null || $referrer === '') return 'Direkt / Bookmark';
         $parsed = parse_url($referrer);
         $refHost = $parsed['host'] ?? '';
         if ($refHost === '' || str_contains($refHost, $currentHost)) {

@@ -7,6 +7,7 @@ use Heartbeat\Http\Request;
 use Heartbeat\Http\Response;
 use Heartbeat\Http\Router;
 use Heartbeat\Security\Security;
+use Heartbeat\Security\Csrf;
 use Heartbeat\Installer\InstallerController;
 use Heartbeat\Database\Database;
 
@@ -51,6 +52,20 @@ final class App
         // 2. Check installation status
         $isInstalled = Bootstrap::isInstalled();
         $path = $this->request->getPath();
+
+        // Favicon direct handler (never trigger 404 or 500)
+        if ($path === '/favicon.ico') {
+            $icoPath = dirname(__DIR__) . '/public/favicon.ico';
+            if (file_exists($icoPath)) {
+                (new Response(file_get_contents($icoPath), 200, [
+                    'Content-Type'  => 'image/x-icon',
+                    'Cache-Control' => 'public, max-age=86400',
+                ]))->send();
+                return;
+            }
+            (new Response('', 204))->send();
+            return;
+        }
 
         // 3. If not installed, redirect all non-install requests to /install
         if (!$isInstalled && !str_starts_with($path, '/install')) {
@@ -115,6 +130,7 @@ final class App
         $this->router->post('/admin/system/clear-cache', [AdminController::class, 'clearCache']);
 
         // Phase 3: Content Management & Block Builder
+        $this->router->get('/admin/content', fn(Request $r, array $p) => (new ContentController())->index($r, ['type' => 'page']));
         $this->router->get('/admin/pages', fn(Request $r, array $p) => (new ContentController())->index($r, ['type' => 'page']));
         $this->router->get('/admin/posts', fn(Request $r, array $p) => (new ContentController())->index($r, $p));
         $this->router->get('/admin/content/create', [ContentController::class, 'create']);
@@ -142,13 +158,19 @@ final class App
         $this->router->get('/admin/custom-code', [CustomCodeController::class, 'index']);
         $this->router->post('/admin/custom-code/save', [CustomCodeController::class, 'save']);
 
-        // Phase 4: Compiled Theme CSS Static Bundle Route
+        // Phase 4: Compiled Theme CSS Static Bundle Route (with live theme preview support)
         $this->router->get('/assets/css/theme.css', function (Request $r) {
             $themeService = ThemeService::getInstance();
-            $css = $themeService->compileActiveThemeCss();
+            $preview = (string)$r->get('theme_preview', '');
+            if ($preview !== '' && ($theme = $themeService->get($preview))) {
+                $compiler = CssCompiler::getInstance();
+                $css = $compiler->compileForTheme($theme);
+            } else {
+                $css = $themeService->compileActiveThemeCss();
+            }
             return new Response($css, 200, [
                 'Content-Type'  => 'text/css; charset=UTF-8',
-                'Cache-Control' => 'public, max-age=3600',
+                'Cache-Control' => 'no-cache, must-revalidate',
             ]);
         });
 
@@ -188,7 +210,10 @@ final class App
 
         // GDPR Tools & Google Fonts Downloader
         $this->router->get('/admin/gdpr', [AgencyModulesController::class, 'gdpr']);
+        $this->router->get('/admin/appearance/fonts', [AgencyModulesController::class, 'gdpr']);
+        $this->router->get('/admin/fonts', [AgencyModulesController::class, 'gdpr']);
         $this->router->post('/admin/gdpr/download-font', [AgencyModulesController::class, 'downloadFontAction']);
+        $this->router->post('/admin/fonts/download', [AgencyModulesController::class, 'downloadFontAction']);
         $this->router->post('/admin/gdpr/export-user', [AgencyModulesController::class, 'exportUserAction']);
         $this->router->post('/admin/gdpr/anonymize-user', [AgencyModulesController::class, 'anonymizeUserAction']);
 
@@ -229,6 +254,15 @@ final class App
             ]);
         });
 
+        // Dynamic robots.txt
+        $this->router->get('/robots.txt', function (Request $r) {
+            $txt = SeoService::getInstance()->generateRobotsTxt();
+            return new Response($txt, 200, [
+                'Content-Type'  => 'text/plain; charset=UTF-8',
+                'Cache-Control' => 'public, max-age=3600',
+            ]);
+        });
+
         // Contact & Inquiry Submission Endpoints (Honeypot & CSRF Protected)
         $this->router->post('/api/contact', [\Heartbeat\Http\ContactController::class, 'submit']);
         $this->router->post('/contact', [\Heartbeat\Http\ContactController::class, 'submit']);
@@ -259,6 +293,17 @@ final class App
             }
             return $this->renderFrontendPage($slug, 'page');
         });
+
+        // Frontend Nested Subpages: /:parent/:slug
+        $this->router->get('/:parent/:slug', function (Request $r, array $params) {
+            $parent = (string)($params['parent'] ?? '');
+            $slug = (string)($params['slug'] ?? '');
+            if (str_starts_with($parent, 'admin') || str_starts_with($parent, 'install') || str_starts_with($parent, 'assets') || str_starts_with($parent, 'uploads')) {
+                return $this->render404();
+            }
+            $fullSlug = $parent . '/' . $slug;
+            return $this->renderFrontendPage($fullSlug, 'page');
+        });
     }
 
     private function renderFrontendPage(string $slug, string $postType = 'page'): Response
@@ -268,13 +313,16 @@ final class App
             $posts = PostService::getInstance();
             $renderer = BlockRenderer::getInstance();
             $themeService = ThemeService::getInstance();
-            $activeTheme = $themeService->getActive();
+            $activeTheme = $this->getRequestedTheme($themeService);
 
             $post = $posts->findBySlug($slug, $postType);
 
             $siteTitle = $db->fetchColumn("SELECT option_value FROM {prefix}options WHERE option_name = 'site_title'") ?: 'Heartbeat CMS';
             $siteUrl = (string)$db->fetchColumn("SELECT option_value FROM {prefix}options WHERE option_name = 'site_url'") ?: 'http://localhost:8000';
-            $navPages = $db->fetchAll("SELECT title, slug FROM {prefix}posts WHERE post_type = 'page' AND status = 'publish' AND slug != 'home' ORDER BY id ASC LIMIT 5");
+            
+            $navData = $this->buildNavigationTree($db);
+            $navTree = $navData['tree'];
+            $navPages = $navData['flat'];
 
             // Build base context
             $renderedContent = '';
@@ -302,8 +350,10 @@ final class App
                 'siteUrl'         => $siteUrl,
                 'theme'           => $activeTheme,
                 'themeService'    => $themeService,
+                'customCss'       => $themeService->getCustomCss($activeTheme->getSlug()),
                 'contentHtml'     => $renderedContent,
                 'navPages'        => $navPages,
+                'navTree'         => $navTree,
                 'postType'        => $postType,
                 'slug'            => $slug,
                 'request'         => $this->request,
@@ -356,7 +406,7 @@ final class App
             }
 
             // 2. Fallback to default page shell
-            $html = $this->renderPageShell($post['title'], (string)$siteTitle, $siteUrl, $activeTheme, $renderedContent, $navPages, $post);
+            $html = $this->renderPageShell($post['title'], (string)$siteTitle, $siteUrl, $activeTheme, $renderedContent, $navPages, $post, $navTree);
             $html = CustomCodeService::getInstance()->inject($html, $this->request);
 
             // Store in static full-page cache
@@ -374,11 +424,14 @@ final class App
             $db = Database::getInstance();
             $posts = PostService::getInstance();
             $themeService = ThemeService::getInstance();
-            $activeTheme = $themeService->getActive();
+            $activeTheme = $this->getRequestedTheme($themeService);
 
             $siteTitle = $db->fetchColumn("SELECT option_value FROM {prefix}options WHERE option_name = 'site_title'") ?: 'Heartbeat CMS';
             $siteUrl = (string)$db->fetchColumn("SELECT option_value FROM {prefix}options WHERE option_name = 'site_url'") ?: 'http://localhost:8000';
-            $navPages = $db->fetchAll("SELECT title, slug FROM {prefix}posts WHERE post_type = 'page' AND status = 'publish' AND slug != 'home' ORDER BY id ASC LIMIT 5");
+            
+            $navData = $this->buildNavigationTree($db);
+            $navTree = $navData['tree'];
+            $navPages = $navData['flat'];
 
             $items = $posts->query(['post_type' => $postType, 'status' => 'publish', 'limit' => 50]);
 
@@ -399,7 +452,9 @@ final class App
                 'siteUrl'      => $siteUrl,
                 'theme'        => $activeTheme,
                 'themeService' => $themeService,
+                'customCss'    => $themeService->getCustomCss($activeTheme->getSlug()),
                 'navPages'     => $navPages,
+                'navTree'      => $navTree,
                 'request'      => $this->request,
                 'db'           => $db,
                 'csrfField'    => Csrf::field(),
@@ -424,7 +479,7 @@ final class App
         }
     }
 
-    private function renderPageShell(string $title, string $siteTitle, string $siteUrl, Theme $theme, string $contentHtml, array $navPages, array $post): string
+    private function renderPageShell(string $title, string $siteTitle, string $siteUrl, Theme $theme, string $contentHtml, array $navPages, array $post, array $navTree = []): string
     {
         $safePageTitle = Security::e($title);
         $safeSiteTitle = Security::e($siteTitle);
@@ -432,12 +487,41 @@ final class App
         $cssVars = $theme->getCssVariables();
         $settings = $theme->getSettings();
         $containerWidth = Security::e((string)($settings['container_width'] ?? 'max-w-6xl'));
+        $customCss = ThemeService::getInstance()->getCustomCss($theme->getSlug());
+        $customCssTag = !empty($customCss) ? "\n    <style id=\"theme-custom-css\">{$customCss}</style>" : '';
+
+        if (empty($navTree)) {
+            $navTree = array_map(fn($p) => ['title' => $p['title'], 'slug' => $p['slug'], 'children' => []], $navPages);
+        }
 
         $navLinks = '';
-        foreach ($navPages as $np) {
-            $npTitle = Security::e($np['title']);
-            $npSlug = Security::e($np['slug']);
-            $navLinks .= "<a href=\"/{$npSlug}\" class=\"text-xs font-medium text-slate-300 hover:text-white transition\">{$npTitle}</a>";
+        foreach ($navTree as $item) {
+            $npTitle = Security::e($item['title']);
+            $npSlug = Security::e($item['slug']);
+            $url = $npSlug === 'home' ? '/' : '/' . $npSlug;
+
+            if (!empty($item['children'])) {
+                $childrenHtml = '';
+                foreach ($item['children'] as $child) {
+                    $cTitle = Security::e($child['title']);
+                    $cSlug = Security::e($child['slug']);
+                    $childrenHtml .= "<a href=\"/{$cSlug}\" class=\"block px-4 py-2 text-xs text-slate-300 hover:text-white hover:bg-slate-800/60 transition\">{$cTitle}</a>";
+                }
+                $navLinks .= <<<HTML
+<div class="relative group">
+    <a href="{$url}" class="text-xs font-semibold text-slate-300 hover:text-white transition flex items-center space-x-1 py-2">
+        <span>{$npTitle}</span>
+        <svg class="w-3.5 h-3.5 opacity-60 group-hover:rotate-180 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+    </a>
+    <div class="absolute left-0 mt-0.5 w-48 rounded-xl bg-[#0f172a] border border-[#1e293b] shadow-2xl py-1.5 hidden group-hover:block z-50">
+        <a href="{$url}" class="block px-4 py-2 text-xs font-bold text-slate-200 hover:text-white hover:bg-slate-800/60 transition border-b border-[#1e293b]/60">{$npTitle} (Übersicht)</a>
+        {$childrenHtml}
+    </div>
+</div>
+HTML;
+            } else {
+                $navLinks .= "<a href=\"{$url}\" class=\"text-xs font-semibold text-slate-300 hover:text-white transition py-2\">{$npTitle}</a>";
+            }
         }
 
         $seoTags = SeoService::getInstance()->renderMetaTags($post, $siteTitle, $siteUrl);
@@ -453,15 +537,14 @@ final class App
         {$cssVars}
     </style>
     <link rel="stylesheet" href="/assets/css/installer.css">
-    <link rel="stylesheet" href="/assets/css/theme.css">
-    <script src="/assets/js/alpine.min.js" defer></script>
+    <link rel="stylesheet" href="/assets/css/theme.css">{$customCssTag}
 </head>
-<body class="bg-[#090d16] text-slate-100 font-sans antialiased selection:bg-[#f97316] selection:text-white min-h-screen flex flex-col justify-between">
+<body class="bg-[#090d16] text-slate-100 font-sans antialiased selection:bg-[var(--hb-primary)] selection:text-white min-h-screen flex flex-col justify-between">
     <!-- Navbar -->
     <header class="border-b border-[#1e293b] bg-[#090d16]/80 backdrop-blur sticky top-0 z-50">
         <div class="{$containerWidth} mx-auto px-6 h-16 flex items-center justify-between">
             <a href="/" class="flex items-center space-x-3">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-black text-sm">
+                <div class="w-8 h-8 rounded-lg bg-hb-primary flex items-center justify-center text-white font-black text-sm" style="background-color: var(--hb-primary);">
                     HB
                 </div>
                 <span class="font-bold text-white tracking-tight">{$safeSiteTitle}</span>
@@ -472,7 +555,7 @@ final class App
             </nav>
 
             <div class="flex items-center space-x-4">
-                <a href="/admin/login" class="text-xs font-semibold px-4 py-2 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white transition shadow-lg shadow-orange-500/20">
+                <a href="/admin/login" class="text-xs font-semibold px-4 py-2 rounded-xl bg-hb-primary bg-hb-primary-hover text-white transition shadow-lg">
                     Adminbereich &rarr;
                 </a>
             </div>
@@ -501,6 +584,8 @@ HTML;
         $safeTitle = Security::e($siteTitle);
         $safeTheme = Security::e($theme->getName());
         $cssVars = $theme->getCssVariables();
+        $customCss = ThemeService::getInstance()->getCustomCss($theme->getSlug());
+        $customCssTag = !empty($customCss) ? "\n    <style id=\"theme-custom-css\">{$customCss}</style>" : '';
 
         return <<<HTML
 <!DOCTYPE html>
@@ -513,21 +598,20 @@ HTML;
         {$cssVars}
     </style>
     <link rel="stylesheet" href="/assets/css/installer.css">
-    <link rel="stylesheet" href="/assets/css/theme.css">
-    <script src="/assets/js/alpine.min.js" defer></script>
+    <link rel="stylesheet" href="/assets/css/theme.css">{$customCssTag}
 </head>
-<body class="bg-[#090d16] text-slate-100 font-sans antialiased selection:bg-[#f97316] selection:text-white">
+<body class="bg-[#090d16] text-slate-100 font-sans antialiased selection:bg-[var(--hb-primary)] selection:text-white">
     <header class="border-b border-[#1e293b] bg-[#090d16]/80 backdrop-blur sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-black text-sm">
+                <div class="w-8 h-8 rounded-lg bg-hb-primary flex items-center justify-center text-white font-black text-sm" style="background-color: var(--hb-primary);">
                     HB
                 </div>
                 <span class="font-bold text-white tracking-tight">{$safeTitle}</span>
             </div>
             <div class="flex items-center space-x-4">
                 <span class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">Theme: {$safeTheme}</span>
-                <a href="/admin/login" class="text-xs font-semibold px-4 py-2 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white transition shadow-lg shadow-orange-500/20">
+                <a href="/admin/login" class="text-xs font-semibold px-4 py-2 rounded-xl bg-hb-primary bg-hb-primary-hover text-white transition shadow-lg">
                     Adminbereich &rarr;
                 </a>
             </div>
@@ -535,7 +619,7 @@ HTML;
     </header>
 
     <main class="max-w-6xl mx-auto px-6 py-20 text-center">
-        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-6">
+        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-semibold mb-6" style="background-color: color-mix(in srgb, var(--hb-primary) 10%, transparent); border-color: color-mix(in srgb, var(--hb-primary) 20%, transparent); color: var(--hb-primary);">
             <span>●</span>
             <span>Heartbeat CMS Core v1.0.0 Online</span>
         </div>
@@ -546,7 +630,7 @@ HTML;
             Das moderne, blitzschnelle und ultra-sichere Headless/Hybrid CMS für digitale Agenturen.
         </p>
         <div class="flex flex-wrap items-center justify-center gap-4">
-            <a href="/admin/login" class="px-6 py-3 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white font-semibold text-sm transition shadow-lg shadow-orange-500/25">
+            <a href="/admin/login" class="px-6 py-3 rounded-xl bg-hb-primary bg-hb-primary-hover text-white font-semibold text-sm transition shadow-lg">
                 Admin Dashboard &rarr;
             </a>
         </div>
@@ -564,7 +648,7 @@ HTML;
     {
         try {
             $themeService = ThemeService::getInstance();
-            $theme = $themeService->getActive();
+            $theme = $this->getRequestedTheme($themeService);
             $context = [
                 'theme'        => $theme,
                 'themeService' => $themeService,
@@ -583,11 +667,61 @@ HTML;
             '<!DOCTYPE html><html lang="de" class="dark"><head><meta charset="utf-8"><title>404 - Seite nicht gefunden</title>' .
             '<link rel="stylesheet" href="/assets/css/installer.css"></head>' .
             '<body class="bg-[#090d16] text-slate-400 font-sans flex items-center justify-center min-h-screen m-0">' .
-            '<div class="text-center p-8"><div class="w-16 h-16 rounded-2xl bg-orange-500/10 text-orange-400 mx-auto mb-4 flex items-center justify-center text-2xl font-bold">404</div>' .
+            '<div class="text-center p-8"><div class="w-16 h-16 rounded-2xl bg-slate-800 text-slate-200 mx-auto mb-4 flex items-center justify-center text-2xl font-bold">404</div>' .
             '<h1 class="text-white text-2xl font-bold mb-2">Seite nicht gefunden</h1>' .
             '<p class="text-xs text-slate-400 mb-6">Die gewünschte Seite oder dieser Beitrag existiert leider nicht.</p>' .
-            '<a href="/" class="px-5 py-2.5 rounded-xl bg-[#f97316] text-white text-xs font-semibold hover:bg-[#ea580c] transition">&larr; Zurück zur Startseite</a></div></body></html>',
+            '<a href="/" class="px-5 py-2.5 rounded-xl bg-slate-800 text-white text-xs font-semibold hover:bg-slate-700 transition">&larr; Zurück zur Startseite</a></div></body></html>',
             404
         );
+    }
+
+    /**
+     * Resolve the active theme or preview theme requested via ?theme_preview=slug
+     */
+    private function getRequestedTheme(ThemeService $themeService): \Heartbeat\Themes\Theme
+    {
+        $preview = (string)$this->request->get('theme_preview', '');
+        if ($preview !== '') {
+            $previewTheme = $themeService->get($preview);
+            if ($previewTheme !== null) {
+                return $previewTheme;
+            }
+        }
+        return $themeService->getActive();
+    }
+
+    /**
+     * Build hierarchical navigation tree from published pages
+     * @return array{tree: array<int, array<string, mixed>>, flat: array<int, array<string, mixed>>}
+     */
+    private function buildNavigationTree(Database $db): array
+    {
+        $allPages = $db->fetchAll(
+            "SELECT id, uuid, parent_id, title, slug FROM {prefix}posts 
+             WHERE post_type = 'page' AND status = 'publish' 
+             ORDER BY id ASC"
+        );
+
+        $lookup = [];
+        $tree = [];
+
+        foreach ($allPages as $p) {
+            $p['children'] = [];
+            $lookup[(int)$p['id']] = $p;
+        }
+
+        foreach ($lookup as $id => $p) {
+            $parentId = (int)($p['parent_id'] ?? 0);
+            if ($parentId > 0 && isset($lookup[$parentId])) {
+                $lookup[$parentId]['children'][] = &$lookup[$id];
+            } else {
+                $tree[] = &$lookup[$id];
+            }
+        }
+
+        return [
+            'tree' => $tree,
+            'flat' => array_values(array_filter($allPages, fn($p) => $p['slug'] !== 'home')),
+        ];
     }
 }

@@ -1,11 +1,25 @@
 #!/bin/sh
-if command -v php >/dev/null 2>&1; then
-    exec php "$@"
-elif [ -x /Applications/XAMPP/xamppfiles/bin/php ]; then
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Check standard installation locations first to avoid recursive wrapper calls
+if [ -x /Applications/XAMPP/xamppfiles/bin/php ]; then
     exec /Applications/XAMPP/xamppfiles/bin/php "$@"
 elif [ -x /opt/homebrew/bin/php ]; then
     exec /opt/homebrew/bin/php "$@"
-else
-    echo "Error: PHP binary not found." >&2
-    exit 1
+elif [ -x /usr/local/bin/php ]; then
+    exec /usr/local/bin/php "$@"
+elif [ -x /usr/bin/php ]; then
+    exec /usr/bin/php "$@"
 fi
+
+# Fallback: check PATH, but ensure we don't call this script itself
+for p in $(which -a php 2>/dev/null); do
+    p_dir="$(cd "$(dirname "$p")" 2>/dev/null && pwd)"
+    if [ "$p_dir" != "$SCRIPT_DIR" ] && [ -x "$p" ]; then
+        exec "$p" "$@"
+    fi
+done
+
+echo "Error: PHP binary not found. Please install PHP (via Homebrew, XAMPP, or Herd)." >&2
+exit 1
+

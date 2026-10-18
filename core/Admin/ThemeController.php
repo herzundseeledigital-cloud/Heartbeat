@@ -68,21 +68,21 @@ final class ThemeController
                 : '<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] text-slate-500 font-mono">v' . $safeVersion . '</span>';
 
             $actionBtn = $isActive
-                ? "<a href=\"/admin/themes/customize?theme={$safeSlug}\" class=\"px-4 py-2 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20 transition flex items-center space-x-1.5\">
+                ? "<a href=\"/admin/themes/customize?theme={$safeSlug}\" class=\"px-4 py-2 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20 transition flex items-center space-x-1.5\">
                      <svg class=\"w-3.5 h-3.5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z\"></path></svg>
                      <span>Live anpassen</span>
                    </a>"
                 : "<form method=\"POST\" action=\"/admin/themes/activate/{$safeSlug}\" class=\"inline\">
                      {$csrfField}
-                     <button type=\"submit\" class=\"px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700\">
+                     <button type=\"submit\" class=\"px-3.5 py-2 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold transition shadow-lg shadow-[#fb326f]/20\">
                        Aktivieren
                      </button>
                    </form>
-                   <a href=\"/admin/themes/customize?theme={$safeSlug}\" class=\"px-3 py-2 rounded-xl bg-[#141e33] hover:bg-[#1e293b] text-slate-400 hover:text-white text-xs font-medium transition\">
-                     Vorschau
+                   <a href=\"/admin/themes/customize?theme={$safeSlug}\" class=\"px-3 py-2 rounded-xl bg-[#141e33] hover:bg-[#1e293b] text-slate-300 hover:text-white text-xs font-medium transition border border-[#1e293b]\">
+                     Live-Vorschau
                    </a>";
 
-            $borderClass = $isActive ? 'border-orange-500/40 ring-1 ring-orange-500/20' : 'border-[#1e293b]';
+            $borderClass = $isActive ? 'border-[#fb326f]/40 ring-1 ring-[#fb326f]/20' : 'border-[#1e293b]';
 
             $themeCards .= <<<HTML
 <div class="bg-[#0f172a] border {$borderClass} rounded-2xl p-6 shadow-xl flex flex-col justify-between transition hover:border-slate-700">
@@ -119,8 +119,8 @@ HTML;
         }
 
         $headerActions = <<<HTML
-<a href="/admin/themes/customize" class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white transition shadow-lg shadow-orange-500/20">
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width=\"2\" d=\"M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z\"></path></svg>
+<a href="/admin/themes/customize" class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white transition shadow-lg shadow-[#fb326f]/20">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z\"></path></svg>
     <span>Theme Studio öffnen</span>
 </a>
 HTML;
@@ -130,10 +130,10 @@ HTML;
     <div class="flex items-center justify-between bg-[#141e33]/40 border border-[#1e293b] rounded-2xl p-4 sm:p-5">
         <div>
             <h2 class="text-sm font-bold text-white">Live Theme Engine &amp; Design Studio</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Wählen Sie das aktive Theme aus und passen Sie Farben, Schriften und Styles in Echtzeit ohne Node.js an.</p>
+            <p class="text-xs text-slate-400 mt-0.5">Wählen Sie das aktive Theme aus und passen Sie Farben, Schriften und Styles in Echtzeit an.</p>
         </div>
         <div class="hidden sm:block">
-            <span class="text-xs px-3 py-1.5 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20 font-semibold">
+            <span class="text-xs px-3 py-1.5 rounded-xl bg-[#fb326f]/10 text-[#fb326f] border border-[#fb326f]/20 font-semibold">
                 JIT CSS Engine aktiv
             </span>
         </div>
@@ -202,31 +202,45 @@ HTML;
             'colors'     => $colors,
             'typography' => $typography,
             'settings'   => $settings,
-            'custom_css' => $this->compiler->getCss($theme->getSlug()),
+            'custom_css' => $this->themes->getCustomCss($theme->getSlug()),
         ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        $safeConfigAttr = htmlspecialchars($themeConfigJson, ENT_QUOTES, 'UTF-8');
+
+        $isActive = ($this->themes->getActive()->getSlug() === $theme->getSlug());
+        $activationBlock = $isActive
+            ? '<span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><span>●</span><span>Aktiv</span></span>'
+            : '<form method="POST" action="/admin/themes/activate/' . $safeThemeSlug . '" class="inline">' .
+              $csrfField .
+              '<button type="submit" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-[#fb326f] hover:bg-[#e01e5a] text-white shadow-sm transition flex items-center space-x-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  <span>Aktivieren</span>
+              </button></form>';
 
         $contentHtml = <<<HTML
-<div x-data="themeStudio({$themeConfigJson})" class="flex flex-col lg:flex-row gap-6 h-[calc(100vh-12rem)]">
+<div x-data="themeStudio({$safeConfigAttr})" class="flex flex-col lg:flex-row gap-6 h-[calc(100vh-12rem)]">
     <!-- Left Sidebar: Controls & Presets -->
     <div class="w-full lg:w-96 flex flex-col bg-[#0f172a] border border-[#1e293b] rounded-2xl shadow-2xl overflow-hidden flex-shrink-0">
         <!-- Studio Header -->
         <div class="p-4 border-b border-[#1e293b] bg-[#141e33]/50 flex items-center justify-between">
             <div>
                 <h3 class="text-xs font-bold text-white tracking-wide uppercase">Theme Customizer</h3>
-                <span class="text-[11px] text-orange-400 font-mono">{$safeThemeName}</span>
+                <span class="text-[11px] text-[#fb326f] font-mono">{$safeThemeName}</span>
             </div>
-            <!-- Preset Dropdown -->
-            <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                <button type="button" @click="open = !open" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-slate-800 text-slate-300 hover:text-white border border-slate-700 flex items-center space-x-1">
-                    <span>Presets</span>
-                    <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                <div x-show="open" x-cloak class="absolute right-0 mt-1 w-44 bg-[#090d16] border border-[#1e293b] rounded-xl shadow-2xl py-1 z-30 text-xs">
-                    <button type="button" @click="applyPreset('herzundseele'); open = false" class="w-full text-left px-3 py-1.5 hover:bg-[#141e33] text-slate-300 hover:text-white">Herz &amp; Seele Dark</button>
-                    <button type="button" @click="applyPreset('emerald'); open = false" class="w-full text-left px-3 py-1.5 hover:bg-[#141e33] text-slate-300 hover:text-white">Emerald Agency</button>
-                    <button type="button" @click="applyPreset('purple'); open = false" class="w-full text-left px-3 py-1.5 hover:bg-[#141e33] text-slate-300 hover:text-white">Royal Purple</button>
-                    <button type="button" @click="applyPreset('ocean'); open = false" class="w-full text-left px-3 py-1.5 hover:bg-[#141e33] text-slate-300 hover:text-white">Ocean Blue</button>
-                    <button type="button" @click="applyPreset('light'); open = false" class="w-full text-left px-3 py-1.5 hover:bg-[#141e33] text-slate-300 hover:text-white">Clean Light</button>
+            <div class="flex items-center space-x-2">
+                {$activationBlock}
+                <!-- Preset Dropdown -->
+                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                    <button type="button" @click="open = !open" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-slate-800 text-slate-300 hover:text-white border border-slate-700 flex items-center space-x-1">
+                        <span>Presets</span>
+                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="open" x-cloak class="absolute right-0 mt-1 w-44 bg-[#090d16] border border-[#1e293b] rounded-xl shadow-2xl py-1 z-30 text-xs">
+                        <button type="button" @click="applyPreset('herzundseele'); open = false" class="w-full text-left px-3 py-1.5 hover:bg-[#141e33] text-slate-300 hover:text-white">Herz &amp; Seele Dark</button>
+                        <button type="button" @click="applyPreset('emerald'); open = false" class="w-full text-left px-3 py-1.5 hover:bg-[#141e33] text-slate-300 hover:text-white">Emerald Agency</button>
+                        <button type="button" @click="applyPreset('purple'); open = false" class="w-full text-left px-3 py-1.5 hover:bg-[#141e33] text-slate-300 hover:text-white">Royal Purple</button>
+                        <button type="button" @click="applyPreset('ocean'); open = false" class="w-full text-left px-3 py-1.5 hover:bg-[#141e33] text-slate-300 hover:text-white">Ocean Blue</button>
+                        <button type="button" @click="applyPreset('light'); open = false" class="w-full text-left px-3 py-1.5 hover:bg-[#141e33] text-slate-300 hover:text-white">Clean Light</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -356,17 +370,36 @@ HTML;
                     <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Zusätzliches CSS</span>
                     <span class="text-[10px] text-slate-500 font-mono">Live Injected</span>
                 </div>
-                <textarea name="custom_css" x-model="config.custom_css" rows="4" placeholder="/* Eigene Tailwind oder CSS-Regeln */"
-                          class="w-full p-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-white font-mono text-[11px] focus:outline-none focus:border-[#f97316]"></textarea>
+                <div class="relative flex rounded-xl bg-[#090d16] border border-[#1e293b] overflow-hidden focus-within:border-[#fb326f] shadow-inner font-mono text-[11px]">
+                    <!-- Line Numbers Gutter -->
+                    <div id="cssLineNumbers"
+                         class="select-none py-2.5 px-2 bg-[#0c1220] border-r border-[#1e293b] text-slate-500 text-right leading-5 min-w-[2.5rem] overflow-hidden"
+                         aria-hidden="true">
+                        <template x-for="line in (config.custom_css ? config.custom_css.split('\\n').length : 1)" :key="line">
+                            <div x-text="line"></div>
+                        </template>
+                    </div>
+                    <!-- Code Editor Textarea -->
+                    <textarea id="customCssEditor"
+                              name="custom_css"
+                              x-model="config.custom_css"
+                              @input="updatePreviewCss()"
+                              @scroll="syncScroll(\$event)"
+                              @keydown.tab.prevent="handleTab(\$event)"
+                              rows="8"
+                              spellcheck="false"
+                              placeholder="/* Eigene Tailwind oder CSS-Regeln */"
+                              class="flex-1 p-2.5 bg-transparent text-white leading-5 resize-y focus:outline-none whitespace-pre overflow-auto font-mono"></textarea>
+                </div>
             </div>
         </form>
 
         <!-- Studio Footer: Save Button -->
         <div class="p-4 border-t border-[#1e293b] bg-[#141e33]/50 flex items-center justify-between">
             <a href="/admin/themes" class="text-xs text-slate-400 hover:text-white transition">&larr; Zurück</a>
-            <button type="submit" form="customizerForm" class="px-5 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20 transition flex items-center space-x-1.5">
+            <button type="submit" form="customizerForm" class="px-5 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20 transition flex items-center space-x-1.5">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                <span>Theme speichern</span>
+                <span>Änderungen speichern</span>
             </button>
         </div>
     </div>
@@ -404,7 +437,7 @@ HTML;
         <!-- Iframe Container -->
         <div class="flex-1 bg-[#070b14] flex items-center justify-center p-2 overflow-hidden">
             <div :style="'width: ' + deviceWidth + '; height: 100%; transition: width 0.3s ease;'" class="shadow-2xl rounded-xl overflow-hidden border border-[#1e293b]">
-                <iframe id="themePreviewFrame" src="/?preview=1&nocache=1" class="w-full h-full bg-[#090d16] border-0"></iframe>
+                <iframe id="themePreviewFrame" src="/?theme_preview={$safeThemeSlug}&preview=1&nocache=1" @load="updatePreview(); updatePreviewCss()" class="w-full h-full bg-[#090d16] border-0"></iframe>
             </div>
         </div>
     </div>
@@ -415,10 +448,55 @@ function themeStudio(initialConfig) {
     return {
         config: initialConfig,
         deviceWidth: '100%',
+        init() {
+            this.\$nextTick(() => {
+                this.updatePreview();
+                this.updatePreviewCss();
+            });
+        },
+        syncScroll(e) {
+            const gutter = document.getElementById('cssLineNumbers');
+            if (gutter) {
+                gutter.scrollTop = e.target.scrollTop;
+            }
+        },
+        handleTab(e) {
+            const textarea = e.target;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const value = textarea.value;
+            textarea.value = value.substring(0, start) + "  " + value.substring(end);
+            this.config.custom_css = textarea.value;
+            textarea.selectionStart = textarea.selectionEnd = start + 2;
+            this.updatePreviewCss();
+        },
+        updatePreviewCss() {
+            try {
+                const iframe = document.getElementById('themePreviewFrame');
+                if (iframe && iframe.contentDocument) {
+                    const doc = iframe.contentDocument;
+                    let style = doc.getElementById('live-custom-css');
+                    if (!style) {
+                        style = doc.createElement('style');
+                        style.id = 'live-custom-css';
+                        if (doc.head) {
+                            doc.head.appendChild(style);
+                        } else if (doc.documentElement) {
+                            doc.documentElement.appendChild(style);
+                        }
+                    }
+                    if (style) {
+                        style.textContent = this.config.custom_css || '';
+                    }
+                }
+            } catch (e) {
+                // Ignore cross-origin frame access if any
+            }
+        },
         applyPreset(preset) {
             const presets = {
                 'herzundseele': {
-                    primary: '#f97316', primary_hover: '#ea580c', background: '#090d16',
+                    primary: '#fb326f', primary_hover: '#e01e5a', background: '#090d16',
                     card: '#0f172a', border: '#1e293b', text: '#f8fafc', accent: '#38bdf8'
                 },
                 'emerald': {
@@ -434,7 +512,7 @@ function themeStudio(initialConfig) {
                     card: '#0d233a', border: '#173a5e', text: '#f0f9ff', accent: '#38bdf8'
                 },
                 'light': {
-                    primary: '#ea580c', primary_hover: '#c2410c', background: '#f8fafc',
+                    primary: '#fb326f', primary_hover: '#e01e5a', background: '#f8fafc',
                     card: '#ffffff', border: '#e2e8f0', text: '#0f172a', accent: '#0284c7'
                 }
             };
@@ -464,7 +542,7 @@ function themeStudio(initialConfig) {
         refreshIframe() {
             const iframe = document.getElementById('themePreviewFrame');
             if (iframe) {
-                iframe.src = iframe.src.split('?')[0] + '?preview=1&nocache=' + Date.now();
+                iframe.src = '/?theme_preview=' + encodeURIComponent('{$safeThemeSlug}') + '&preview=1&nocache=' + Date.now();
             }
         }
     };
@@ -503,6 +581,9 @@ HTML;
         $typography = (array)$request->post('typography', []);
         $settings = (array)$request->post('settings', []);
         $customCss = (string)$request->post('custom_css', '');
+
+        // Persist clean custom CSS directly
+        $this->themes->saveCustomCss($theme->getSlug(), $customCss);
 
         $success = $this->themes->updateThemeSettings($theme->getSlug(), [
             'colors'     => $colors,

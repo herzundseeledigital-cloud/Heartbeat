@@ -167,7 +167,7 @@ final class Mailer
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #090d16; color: #f8fafc; padding: 40px; margin: 0;">
     <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 32px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
         <div style="display: flex; align-items: center; margin-bottom: 24px;">
-            <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; font-weight: 900; line-height: 40px; text-align: center; margin-right: 12px;">HB</div>
+            <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #fb326f, #e01e5a); color: #fff; font-weight: 900; line-height: 40px; text-align: center; margin-right: 12px;">HB</div>
             <h2 style="margin: 0; color: #ffffff; font-size: 20px;">Heartbeat CMS Mail-Test</h2>
         </div>
         <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">

@@ -123,9 +123,10 @@ final class ThemeService
             'version'     => '1.0.0',
             'description' => 'Fallback system theme',
             'colors'      => [
-                'primary'    => '#f97316',
-                'background' => '#090d16',
-                'text'       => '#f8fafc',
+                'primary'       => '#f97316',
+                'primary_hover' => '#ea580c',
+                'background'    => '#090d16',
+                'text'          => '#f8fafc',
             ],
         ], $this->themesDir . '/default');
     }
@@ -199,12 +200,97 @@ final class ThemeService
 
         $saved = $theme->save();
 
+        if (isset($settings['custom_css'])) {
+            $this->saveCustomCss($slug, (string)$settings['custom_css']);
+        }
+
         // Always recompile CSS and purge page cache
-        $customCss = (string)($settings['custom_css'] ?? '');
+        $customCss = isset($settings['custom_css']) ? (string)$settings['custom_css'] : $this->getCustomCss($slug);
         $this->compiler->compileForTheme($theme, null, $customCss);
 
         if (class_exists(Cache::class)) {
             Cache::page()->flush();
+        }
+
+        return $saved;
+    }
+
+    /**
+     * Get clean custom CSS for a given theme slug
+     */
+    public function getCustomCss(string $slug): string
+    {
+        $cleanSlug = preg_replace('/[^a-zA-Z0-9_-]/', '', $slug);
+        if ($cleanSlug === '') {
+            $cleanSlug = 'default';
+        }
+
+        $storageBase = defined('HEARTBEAT_STORAGE') ? HEARTBEAT_STORAGE : dirname(__DIR__, 2) . '/storage';
+        $customCssDir = rtrim($storageBase, '/') . '/custom-css';
+
+        $storageFile = $customCssDir . '/' . $cleanSlug . '.css';
+        if (is_file($storageFile)) {
+            $content = file_get_contents($storageFile);
+            if ($content !== false) {
+                return $content;
+            }
+        }
+
+        // Also check resolved theme slug if different
+        $theme = $this->get($slug);
+        if ($theme !== null) {
+            $altSlug = $theme->getSlug();
+            if ($altSlug !== $cleanSlug) {
+                $altFile = $customCssDir . '/' . $altSlug . '.css';
+                if (is_file($altFile)) {
+                    $content = file_get_contents($altFile);
+                    if ($content !== false) {
+                        return $content;
+                    }
+                }
+            }
+        }
+
+        // Fallback to theme directory: themes/{slug}/custom.css
+        $themeDir = $theme !== null ? $theme->getPath() : $this->themesDir . '/' . $cleanSlug;
+        $themeCustomFile = $themeDir . '/custom.css';
+        if (is_file($themeCustomFile)) {
+            $content = file_get_contents($themeCustomFile);
+            if ($content !== false) {
+                return $content;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Persist custom CSS for a given theme slug
+     */
+    public function saveCustomCss(string $slug, string $css): bool
+    {
+        $cleanSlug = preg_replace('/[^a-zA-Z0-9_-]/', '', $slug);
+        if ($cleanSlug === '') {
+            $cleanSlug = 'default';
+        }
+
+        $storageBase = defined('HEARTBEAT_STORAGE') ? HEARTBEAT_STORAGE : dirname(__DIR__, 2) . '/storage';
+        $customCssDir = rtrim($storageBase, '/') . '/custom-css';
+
+        if (!is_dir($customCssDir)) {
+            if (!@mkdir($customCssDir, 0755, true) && !is_dir($customCssDir)) {
+                return false;
+            }
+        }
+
+        $storageFile = $customCssDir . '/' . $cleanSlug . '.css';
+        $saved = file_put_contents($storageFile, $css) !== false;
+
+        // Mirror to themes/{slug}/custom.css if the theme directory exists and is writable
+        $theme = $this->get($slug);
+        $themeDir = $theme !== null ? $theme->getPath() : $this->themesDir . '/' . $cleanSlug;
+        if (is_dir($themeDir) && is_writable($themeDir)) {
+            @file_put_contents($themeDir . '/custom.css', $css);
         }
 
         return $saved;

@@ -159,13 +159,13 @@ final class AdminController
 <div class="flex items-center space-x-3">
     <form method="POST" action="/admin/system/clear-cache">
         {$this->csrfField()}
-        <button type="submit" class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-[#141e33] hover:bg-[#1e293b] border border-[#1e293b] text-slate-300 hover:text-white transition">
-            <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        <button type="submit" class="btn-secondary text-xs">
+            <span class="material-symbols-outlined text-[16px] text-[#fb326f]">cached</span>
             <span>Cache leeren</span>
         </button>
     </form>
-    <a href="/admin/users" class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white transition shadow-lg shadow-orange-500/20">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+    <a href="/admin/users" class="btn-primary text-xs">
+        <span class="material-symbols-outlined text-[16px]">person_add</span>
         <span>Neuer Benutzer</span>
     </a>
 </div>
@@ -195,66 +195,61 @@ HTML;
         }
 
         $contentHtml = <<<HTML
-<!-- Welcome Banner -->
-<div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-[#0f172a] via-[#141e33] to-[#0f172a] border border-[#1e293b] shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+<!-- Status Header / Project Bar -->
+<div class="mb-8 p-6 rounded-2xl bg-[#0f172a] border border-[#1e293b] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-3">
-            <span>●</span>
-            <span>Heartbeat CMS Core v1.0.0</span>
+        <div class="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>System aktiv</span>
+            <span class="text-slate-600">&bull;</span>
+            <span class="font-mono text-slate-300">v1.0.0</span>
         </div>
-        <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">Willkommen im Kontrollzentrum</h2>
-        <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl">
-            Verwalten Sie Ihre Website, Benutzerberechtigungen und Systemeinstellungen über die sichere Heartbeat Admin Shell.
-        </p>
+        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">{$siteTitle}</h2>
     </div>
-    <div class="flex items-center space-x-3">
-        <div class="text-right hidden sm:block">
-            <span class="block text-[11px] text-slate-400">Aktives Projekt</span>
-            <span class="font-bold text-white text-sm">{$siteTitle}</span>
-        </div>
+    <div class="flex items-center space-x-3 text-xs">
+        <a href="/" target="_blank" class="btn-secondary">
+            <span>Frontend ansehen</span>
+            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+        </a>
     </div>
 </div>
 
 <!-- KPI Cards Grid -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
     <!-- Card 1: Pages -->
-    <div class="p-5 bg-[#0f172a] border border-[#1e293b] rounded-2xl shadow-lg">
+    <div class="p-5 bg-[#0f172a] border border-[#1e293b] rounded-2xl">
         <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-semibold text-slate-400">Seiten &amp; Inhalte</span>
-            <div class="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold text-sm">📄</div>
+            <span class="text-xs font-semibold text-slate-400">Seiten</span>
+            <span class="material-symbols-outlined text-[#fb326f] text-[22px]">description</span>
         </div>
-        <div class="text-2xl font-black text-white tracking-tight">{$pageCount}</div>
-        <p class="text-[11px] text-slate-500 mt-1">Veröffentlichte Seiten &amp; Landingpages</p>
+        <div class="text-2xl font-bold text-white tracking-tight">{$pageCount}</div>
     </div>
 
     <!-- Card 2: Users -->
-    <div class="p-5 bg-[#0f172a] border border-[#1e293b] rounded-2xl shadow-lg">
+    <div class="p-5 bg-[#0f172a] border border-[#1e293b] rounded-2xl">
         <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-semibold text-slate-400">Benutzerkonten</span>
-            <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-sm">👥</div>
+            <span class="text-xs font-semibold text-slate-400">Benutzer</span>
+            <span class="material-symbols-outlined text-blue-400 text-[22px]">group</span>
         </div>
-        <div class="text-2xl font-black text-white tracking-tight">{$userCount}</div>
-        <p class="text-[11px] text-slate-500 mt-1">Aktive Rollen im System</p>
+        <div class="text-2xl font-bold text-white tracking-tight">{$userCount}</div>
     </div>
 
-    <!-- Card 3: Database & Health -->
-    <div class="p-5 bg-[#0f172a] border border-[#1e293b] rounded-2xl shadow-lg">
+    <!-- Card 3: Database & Engine -->
+    <div class="p-5 bg-[#0f172a] border border-[#1e293b] rounded-2xl">
         <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-semibold text-slate-400">Datenbank-Engine</span>
-            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-sm">🗄️</div>
+            <span class="text-xs font-semibold text-slate-400">Datenbank</span>
+            <span class="material-symbols-outlined text-emerald-400 text-[22px]">database</span>
         </div>
-        <div class="text-2xl font-black text-emerald-400 tracking-tight">{$driver}</div>
-        <p class="text-[11px] text-slate-500 mt-1">100% Prepared Statements</p>
+        <div class="text-2xl font-bold text-emerald-400 tracking-tight">{$driver}</div>
     </div>
 
     <!-- Card 4: TTFB Cache -->
-    <div class="p-5 bg-[#0f172a] border border-[#1e293b] rounded-2xl shadow-lg">
+    <div class="p-5 bg-[#0f172a] border border-[#1e293b] rounded-2xl">
         <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-semibold text-slate-400">Performance TTFB</span>
-            <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-sm">⚡</div>
+            <span class="text-xs font-semibold text-slate-400">Cache</span>
+            <span class="material-symbols-outlined text-amber-400 text-[22px]">bolt</span>
         </div>
-        <div class="text-2xl font-black text-white tracking-tight">&lt; 20 ms</div>
-        <p class="text-[11px] text-slate-500 mt-1">Multi-Tier Static HTML Cache</p>
+        <div class="text-2xl font-bold text-white tracking-tight">&lt; 20 ms</div>
     </div>
 </div>
 
@@ -265,24 +260,24 @@ HTML;
         {$supportWidget}
 
         <!-- Quick System Status -->
-        <div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 shadow-xl">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Systemstatus &amp; Absicherung</h3>
+        <div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Systemstatus</h3>
             <div class="space-y-3 text-xs">
                 <div class="flex items-center justify-between pb-2 border-b border-[#1e293b]">
                     <span class="text-slate-400">PHP Version</span>
-                    <span class="font-mono text-white">PHP 8.3 Ready</span>
+                    <span class="font-mono text-white">8.3 Ready</span>
                 </div>
                 <div class="flex items-center justify-between pb-2 border-b border-[#1e293b]">
-                    <span class="text-slate-400">CSRF-Absicherung</span>
-                    <span class="text-emerald-400 font-semibold">256-Bit Aktiv</span>
+                    <span class="text-slate-400">CSRF-Schutz</span>
+                    <span class="text-emerald-400 font-semibold">256-Bit</span>
                 </div>
                 <div class="flex items-center justify-between pb-2 border-b border-[#1e293b]">
                     <span class="text-slate-400">Rate Limiter</span>
-                    <span class="text-emerald-400 font-semibold">Brute-Force Guard Aktiv</span>
+                    <span class="text-emerald-400 font-semibold">Aktiv</span>
                 </div>
                 <div class="flex items-center justify-between">
                     <span class="text-slate-400">Client-Guard</span>
-                    <span class="text-orange-400 font-semibold">Aktiviert</span>
+                    <span class="text-[#fb326f] font-semibold">Aktiv</span>
                 </div>
             </div>
         </div>
@@ -290,14 +285,14 @@ HTML;
 
     <!-- Right Column: Recent Users -->
     <div class="lg:col-span-2">
-        <div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 shadow-xl">
+        <div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6">
             <div class="flex items-center justify-between mb-5">
                 <div>
-                    <h3 class="text-base font-bold text-white tracking-tight">Kürzlich registrierte Benutzer</h3>
-                    <p class="text-xs text-slate-400">Übersicht der aktiven Administratoren &amp; Redakteure</p>
+                    <h3 class="text-sm font-bold text-white tracking-tight">Kürzlich registrierte Benutzer</h3>
                 </div>
-                <a href="/admin/users" class="text-xs text-orange-400 hover:text-orange-300 font-semibold transition">
-                    Alle anzeigen &rarr;
+                <a href="/admin/users" class="text-xs text-[#fb326f] hover:underline font-semibold flex items-center space-x-1">
+                    <span>Alle anzeigen</span>
+                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </a>
             </div>
 
@@ -357,10 +352,10 @@ HTML;
 
         // Header Actions
         $actionsHtml = <<<HTML
-<div class="flex items-center space-x-3" x-data>
-    <button @click="window.dispatchEvent(new CustomEvent('open-new-user-modal'))"
-            class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white transition shadow-lg shadow-orange-500/20">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+<div class="flex items-center space-x-3">
+    <button onclick="HeartbeatUI.openModal('createUserModal')"
+            class="btn-primary text-xs">
+        <span class="material-symbols-outlined text-[16px]">person_add</span>
         <span>Neuen Benutzer anlegen</span>
     </button>
 </div>
@@ -386,8 +381,8 @@ HTML;
             $actionButtons = '';
             if ($canManage) {
                 $actionButtons .= <<<HTML
-<a href="/admin/users/edit/{$uid}" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="Bearbeiten">
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+<a href="/admin/users/edit/{$uid}" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition inline-flex items-center" title="Bearbeiten">
+    <span class="material-symbols-outlined text-[18px]">edit</span>
 </a>
 HTML;
             }
@@ -397,8 +392,8 @@ HTML;
                 $actionButtons .= <<<HTML
 <form method="POST" action="/admin/users/delete/{$uid}" onsubmit="return confirm('Möchten Sie den Benutzer {$safeUsername} wirklich unwiderruflich löschen?');" class="inline">
     {$csrf}
-    <button type="submit" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition" title="Löschen">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+    <button type="submit" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition inline-flex items-center" title="Löschen">
+        <span class="material-symbols-outlined text-[18px]">delete</span>
     </button>
 </form>
 HTML;
@@ -439,16 +434,16 @@ HTML;
         $csrfField = $this->csrfField();
 
         $contentHtml = <<<HTML
-<div x-data="{ modalOpen: false }" @open-new-user-modal.window="modalOpen = true">
+<div>
     <!-- Filter & Search Bar -->
     <div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg">
         <form method="GET" action="/admin/users" class="flex-1 flex flex-col sm:flex-row sm:items-center gap-3">
             <div class="relative flex-1">
                 <input type="text" name="search" value="{$search}" placeholder="Benutzer oder E-Mail suchen..."
-                       class="w-full px-4 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-4 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#fb326f]">
             </div>
             <select name="role" onchange="this.form.submit()"
-                    class="px-3 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-slate-300 focus:outline-none focus:border-[#f97316]">
+                    class="px-3 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-slate-300 focus:outline-none focus:border-[#fb326f]">
                 <option value="">Alle Rollen</option>
                 <option value="super_admin" {$this->selected($roleFilter, 'super_admin')}>Super-Admin (Agentur)</option>
                 <option value="admin" {$this->selected($roleFilter, 'admin')}>Administrator (Kunde)</option>
@@ -485,15 +480,14 @@ HTML;
     </div>
 
     <!-- Create User Modal -->
-    <div x-show="modalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" @click="modalOpen = false"></div>
+    <div id="createUserModal" class="hidden modal-dialog fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="HeartbeatUI.closeModal('createUserModal')"></div>
         
-        <div class="relative bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl z-10"
-             @keydown.escape.window="modalOpen = false">
+        <div class="relative bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl z-10">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-bold text-white tracking-tight">Neuen Benutzer anlegen</h3>
-                <button @click="modalOpen = false" class="text-slate-400 hover:text-white">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button type="button" onclick="HeartbeatUI.closeModal('createUserModal')" class="text-slate-400 hover:text-white">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>
             </div>
 
@@ -503,32 +497,32 @@ HTML;
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Benutzername</label>
                     <input type="text" name="username" required
-                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#f97316]">
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#fb326f]">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">E-Mail-Adresse</label>
                     <input type="email" name="email" required
-                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#f97316]">
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#fb326f]">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Passwort</label>
                     <input type="password" name="password" required minlength="8"
-                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#f97316]"
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#fb326f]"
                            placeholder="Mindestens 8 Zeichen">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Rolle</label>
-                        <select name="role" required class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                        <select name="role" required class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                             {$roleOptionsHtml}
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Status</label>
-                        <select name="status" required class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                        <select name="status" required class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                             <option value="active">Aktiv</option>
                             <option value="inactive">Inaktiv</option>
                         </select>
@@ -536,10 +530,10 @@ HTML;
                 </div>
 
                 <div class="flex items-center justify-end space-x-3 pt-4 border-t border-[#1e293b] mt-6">
-                    <button type="button" @click="modalOpen = false" class="px-4 py-2.5 rounded-xl bg-[#141e33] text-xs text-slate-300 hover:text-white">
+                    <button type="button" onclick="HeartbeatUI.closeModal('createUserModal')" class="px-4 py-2.5 rounded-xl bg-[#141e33] text-xs text-slate-300 hover:text-white">
                         Abbrechen
                     </button>
-                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20">
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20">
                         Benutzer anlegen
                     </button>
                 </div>
@@ -740,19 +734,19 @@ HTML;
         <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">E-Mail-Adresse</label>
             <input type="email" name="email" value="{$safeEmail}" required
-                   class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                   class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
         </div>
 
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Rolle</label>
-                <select name="role" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                <select name="role" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                     {$roleOptions}
                 </select>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Status</label>
-                <select name="status" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                <select name="status" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                     <option value="active" {$this->selected($targetUser['status'], 'active')}>Aktiv</option>
                     <option value="inactive" {$this->selected($targetUser['status'], 'inactive')}>Inaktiv</option>
                 </select>
@@ -762,7 +756,7 @@ HTML;
         <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Neues Passwort (optional)</label>
             <input type="password" name="password" minlength="8"
-                   class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#f97316]"
+                   class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#fb326f]"
                    placeholder="Leer lassen, um das bestehende Passwort beizubehalten">
         </div>
 
@@ -770,7 +764,7 @@ HTML;
             <a href="/admin/users" class="px-4 py-2.5 rounded-xl bg-[#141e33] text-xs text-slate-300 hover:text-white">
                 Abbrechen
             </a>
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20">
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20">
                 Änderungen speichern
             </button>
         </div>
@@ -904,20 +898,20 @@ HTML;
         </div>
         <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" name="white_label" value="1" {$this->checked($isWhiteLabel)} class="sr-only peer">
-            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f97316]"></div>
+            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#fb326f]"></div>
         </label>
     </div>
 
     <div>
         <label class="block text-xs font-semibold text-slate-300 mb-1">Agenturname</label>
         <input type="text" name="agency_name" value="{$agencyName}"
-               class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+               class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
     </div>
 
     <div>
         <label class="block text-xs font-semibold text-slate-300 mb-1">Support E-Mail-Adresse</label>
         <input type="email" name="agency_support_email" value="{$agencyEmail}"
-               class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+               class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
     </div>
 
     <div class="flex items-center justify-between p-4 rounded-xl bg-[#090d16] border border-[#1e293b]">
@@ -927,7 +921,7 @@ HTML;
         </div>
         <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" name="client_guard" value="1" {$this->checked($isClientGuard)} class="sr-only peer">
-            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f97316]"></div>
+            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#fb326f]"></div>
         </label>
     </div>
 </div>
@@ -948,16 +942,16 @@ HTML;
 <div class="max-w-4xl" x-data="{ tab: 'general' }">
     <!-- Tabs Header -->
     <div class="flex border-b border-[#1e293b] space-x-2 mb-6">
-        <button @click="tab = 'general'" :class="tab === 'general' ? 'border-[#f97316] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
+        <button @click="tab = 'general'" :class="tab === 'general' ? 'border-[#fb326f] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
                 class="py-3 px-4 border-b-2 text-xs font-medium transition">
             Allgemeine Website-Einstellungen
         </button>
-        <button @click="tab = 'agency'" :class="tab === 'agency' ? 'border-[#f97316] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
+        <button @click="tab = 'agency'" :class="tab === 'agency' ? 'border-[#fb326f] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
                 class="py-3 px-4 border-b-2 text-xs font-medium transition flex items-center space-x-2">
             <span>Agentur &amp; White-Label</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">Client-Guard</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#fb326f]/10 text-[#fb326f] border border-[#fb326f]/20">Client-Guard</span>
         </button>
-        <button @click="tab = 'security'" :class="tab === 'security' ? 'border-[#f97316] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
+        <button @click="tab = 'security'" :class="tab === 'security' ? 'border-[#fb326f] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
                 class="py-3 px-4 border-b-2 text-xs font-medium transition">
             Sicherheit &amp; Session-Core
         </button>
@@ -971,19 +965,19 @@ HTML;
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Titel der Website</label>
                 <input type="text" name="site_title" value="{$siteTitle}" required
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Website URL (Basisadresse)</label>
                 <input type="url" name="site_url" value="{$siteUrl}" required
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Administrator E-Mail</label>
                 <input type="email" name="admin_email" value="{$adminEmail}" required
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 <span class="text-[11px] text-slate-500 mt-1 block">Empfängt Systembenachrichtigungen und Fehlerberichte.</span>
             </div>
         </div>
@@ -1016,7 +1010,7 @@ HTML;
         </div>
 
         <div class="flex items-center justify-end space-x-3 pt-6 border-t border-[#1e293b] mt-6">
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20">
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20">
                 Einstellungen speichern
             </button>
         </div>
@@ -1071,7 +1065,7 @@ HTML;
         </div>
         <form method="POST" action="/admin/system/clear-cache">
             {$csrfField}
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 text-xs font-semibold transition">
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#fb326f]/10 hover:bg-[#fb326f]/20 text-[#fb326f] border border-[#fb326f]/30 text-xs font-semibold transition">
                 Cache jetzt leeren
             </button>
         </form>
@@ -1114,7 +1108,7 @@ HTML;
 
         $contentHtml = <<<HTML
 <div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-12 text-center shadow-xl max-w-xl mx-auto">
-    <div class="w-14 h-14 rounded-2xl bg-orange-500/10 text-orange-400 mx-auto mb-4 flex items-center justify-center font-bold text-2xl">
+    <div class="w-14 h-14 rounded-2xl bg-[#fb326f]/10 text-[#fb326f] mx-auto mb-4 flex items-center justify-center font-bold text-2xl">
         ⚡
     </div>
     <h2 class="text-xl font-bold text-white mb-2">{$safeMod}</h2>
@@ -1152,7 +1146,7 @@ HTML;
         $label = Security::e(Rbac::getLabel($role));
         return match ($role) {
             Rbac::ROLE_SUPER_ADMIN => "<span class=\"inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20\">{$label}</span>",
-            Rbac::ROLE_ADMIN       => "<span class=\"inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20\">{$label}</span>",
+            Rbac::ROLE_ADMIN       => "<span class=\"inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#fb326f]/10 text-[#fb326f] border border-[#fb326f]/20\">{$label}</span>",
             Rbac::ROLE_EDITOR      => "<span class=\"inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20\">{$label}</span>",
             Rbac::ROLE_USER        => "<span class=\"inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/20\">{$label}</span>",
             Rbac::ROLE_MEMBER      => "<span class=\"inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20\">{$label}</span>",
@@ -1168,7 +1162,7 @@ HTML;
     private function selfBadge(bool $isSelf): string
     {
         return $isSelf
-            ? '<span class="ml-1.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400 font-mono">Du</span>'
+            ? '<span class="ml-1.5 text-[10px] px-1.5 py-0.5 rounded bg-[#fb326f]/10 text-[#fb326f] font-mono">Du</span>'
             : '';
     }
 

@@ -149,31 +149,24 @@ final class AgencyService
             : '<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">Client-Guard: Deaktiviert</span>';
 
         return <<<HTML
-<div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 relative overflow-hidden shadow-xl">
-    <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-orange-500/5 rounded-full blur-2xl pointer-events-none"></div>
+<div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 relative overflow-hidden">
     <div class="flex items-start justify-between mb-4">
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-orange-500/20">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#fb326f] to-[#e01e5a] flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-[#fb326f]/20">
                 HS
             </div>
             <div>
-                <h3 class="text-base font-bold text-white tracking-tight">{$agencyName}</h3>
-                <p class="text-xs text-slate-400">Agentur-Support &amp; Technische Betreuung</p>
+                <h3 class="text-sm font-bold text-white tracking-tight">{$agencyName}</h3>
+                <p class="text-xs text-slate-400">Technischer Support</p>
             </div>
         </div>
         {$guardBadge}
     </div>
     
-    <p class="text-xs text-slate-400 leading-relaxed mb-5">
-        Ihr System wird kontinuierlich gewartet. Bei technischen Fragen, Änderungswünschen oder Notfällen steht Ihnen unser Support-Team jederzeit zur Seite.
-    </p>
-
     <div class="flex flex-wrap items-center gap-3">
         <a href="mailto:{$supportEmail}?subject=Support-Anfrage%20Website" 
-           class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white transition shadow-lg shadow-orange-500/20">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-            </svg>
+           class="btn-primary text-xs">
+            <span class="material-symbols-outlined text-[16px]">mail</span>
             <span>Support kontaktieren</span>
         </a>
         <span class="text-xs text-slate-500 font-mono">{$supportEmail}</span>

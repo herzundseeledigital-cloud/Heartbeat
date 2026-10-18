@@ -115,10 +115,14 @@ final class CssCompiler
                 $blockClasses = $this->extractClasses((string)($post['content_blocks'] ?? ''));
                 $htmlClasses = $this->extractClasses((string)($post['content_html'] ?? ''));
                 foreach ($blockClasses as $c) {
-                    $classes[$c] = true;
+                    if (stripos($c, '#fb326f') === false && stripos($c, '#e01e5a') === false && stripos($c, 'fb326f') === false && stripos($c, 'e01e5a') === false) {
+                        $classes[$c] = true;
+                    }
                 }
                 foreach ($htmlClasses as $c) {
-                    $classes[$c] = true;
+                    if (stripos($c, '#fb326f') === false && stripos($c, '#e01e5a') === false && stripos($c, 'fb326f') === false && stripos($c, 'e01e5a') === false) {
+                        $classes[$c] = true;
+                    }
                 }
             }
         } catch (\Throwable) {
@@ -165,7 +169,10 @@ final class CssCompiler
         // Collect all classes from database, theme templates and custom inputs
         $dbClasses = $this->extractAllDatabaseClasses();
         $themeClasses = $this->extractThemeClasses($theme);
-        $allClasses = array_unique(array_merge($dbClasses, $themeClasses, $additionalClasses ?? []));
+        $allClasses = array_values(array_filter(
+            array_unique(array_merge($dbClasses, $themeClasses, $additionalClasses ?? [])),
+            static fn (string $c): bool => stripos($c, '#fb326f') === false && stripos($c, '#e01e5a') === false && stripos($c, 'fb326f') === false && stripos($c, 'e01e5a') === false
+        ));
 
         // Generate base styles and CSS variables
         $baseCss = <<<CSS

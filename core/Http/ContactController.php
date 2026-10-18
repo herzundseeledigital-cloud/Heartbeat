@@ -119,7 +119,7 @@ HTML;
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #090d16; color: #f8fafc; padding: 24px; margin: 0;">
     <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 24px;">
         <div style="border-bottom: 1px solid #1e293b; padding-bottom: 16px; margin-bottom: 20px;">
-            <h2 style="color: #f97316; margin: 0 0 6px 0; font-size: 20px;">Neue Anfrage via {$safeSiteTitle}</h2>
+            <h2 style="color: #f8fafc; margin: 0 0 6px 0; font-size: 20px;">Neue Anfrage via {$safeSiteTitle}</h2>
             <div style="color: #94a3b8; font-size: 12px;">Eingegangen am {$dateStr}</div>
         </div>
 

@@ -59,10 +59,20 @@ final class PostService
      */
     public function findBySlug(string $slug, string $postType = 'page'): ?array
     {
+        $cleanSlug = trim($slug, '/');
         $post = $this->db->fetchOne(
-            "SELECT * FROM {prefix}posts WHERE slug = :slug AND post_type = :type LIMIT 1",
-            ['slug' => $slug, 'type' => $postType]
+            "SELECT * FROM {prefix}posts WHERE (slug = :slug OR slug = :cleanSlug) AND post_type = :type LIMIT 1",
+            ['slug' => $slug, 'cleanSlug' => $cleanSlug, 'type' => $postType]
         );
+
+        if (!$post && str_contains($cleanSlug, '/')) {
+            $parts = explode('/', $cleanSlug);
+            $lastPart = end($parts);
+            $post = $this->db->fetchOne(
+                "SELECT * FROM {prefix}posts WHERE slug = :lastPart AND post_type = :type LIMIT 1",
+                ['lastPart' => $lastPart, 'type' => $postType]
+            );
+        }
 
         if (!$post) {
             return null;
@@ -243,8 +253,12 @@ final class PostService
         $now = date('Y-m-d H:i:s');
         $status = (string)($data['status'] ?? 'publish');
         $authorId = (int)($data['author_id'] ?? 1);
+        $uuid = !empty($data['uuid']) ? (string)$data['uuid'] : Security::uuid();
+        $parentId = (int)($data['parent_id'] ?? 0);
 
         $postId = (int)$this->db->insert('{prefix}posts', [
+            'uuid'           => $uuid,
+            'parent_id'      => $parentId,
             'title'          => $title,
             'slug'           => $uniqueSlug,
             'content_blocks' => $blocksJson,
@@ -314,6 +328,10 @@ final class PostService
 
         if (isset($data['author_id'])) {
             $updateData['author_id'] = (int)$data['author_id'];
+        }
+
+        if (isset($data['parent_id'])) {
+            $updateData['parent_id'] = (int)$data['parent_id'];
         }
 
         $updateData['updated_at'] = date('Y-m-d H:i:s');

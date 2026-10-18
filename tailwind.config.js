@@ -12,17 +12,17 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          50: '#fff7ed',
-          100: '#ffedd5',
-          200: '#fed7aa',
-          300: '#fdba74',
-          400: '#fb923c',
-          500: '#f97316', // Heartbeat core orange
-          600: '#ea580c',
-          700: '#c2410c',
-          800: '#9a3412',
-          900: '#7c2d12',
-          DEFAULT: '#f97316'
+          50: '#fff1f5',
+          100: '#ffe4ec',
+          200: '#fecddc',
+          300: '#fda4c0',
+          400: '#fb6b99',
+          500: '#fb326f', // Heartbeat brand main
+          600: '#e01e5a',
+          700: '#bd1145',
+          800: '#9c123b',
+          900: '#821435',
+          DEFAULT: '#fb326f'
         },
         dark: {
           bg: '#090d16',       // Deepest background
@@ -37,8 +37,8 @@ module.exports = {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       boxShadow: {
-        'glow': '0 0 25px -5px rgba(249, 115, 22, 0.25)',
-        'glow-lg': '0 0 35px -5px rgba(249, 115, 22, 0.35)',
+        'glow': '0 0 25px -5px rgba(251, 50, 111, 0.25)',
+        'glow-lg': '0 0 35px -5px rgba(251, 50, 111, 0.35)',
       }
     },
   },

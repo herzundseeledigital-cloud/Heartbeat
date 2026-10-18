@@ -79,8 +79,8 @@ final class Router
         return Response::html(
             '<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>404 - Seite nicht gefunden</title>' .
             '<style>body{background:#090d16;color:#94a3b8;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;}' .
-            '.box{text-align:center;padding:2rem;} h1{color:#f97316;font-size:3rem;margin:0 0 1rem;} p{font-size:1.1rem;}' .
-            'a{color:#f97316;text-decoration:none;border-bottom:1px solid #f97316;} a:hover{opacity:0.8;}</style></head>' .
+            '.box{text-align:center;padding:2rem;} h1{color:#f8fafc;font-size:3rem;margin:0 0 1rem;} p{font-size:1.1rem;}' .
+            'a{color:#94a3b8;text-decoration:none;border-bottom:1px solid #64748b;} a:hover{color:#f8fafc;}</style></head>' .
             '<body><div class="box"><h1>404</h1><p>Die angeforderte Seite existiert nicht.</p><p><a href="/">Zur Startseite &rarr;</a></p></div></body></html>',
             404
         );

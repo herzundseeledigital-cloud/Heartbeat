@@ -125,7 +125,7 @@ final class Bootstrap
                 echo '<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Heartbeat Error</title>';
                 echo '<style>body{background:#090d16;color:#f8fafc;font-family:sans-serif;padding:2rem;}';
                 echo '.box{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:2rem;max-width:900px;margin:0 auto;}';
-                echo 'h1{color:#f97316;margin-top:0;} pre{background:#090d16;padding:1rem;border-radius:8px;overflow-x:auto;color:#cbd5e1;}';
+                echo 'h1{color:#fb326f;margin-top:0;} pre{background:#090d16;padding:1rem;border-radius:8px;overflow-x:auto;color:#cbd5e1;}';
                 echo '</style></head><body><div class="box">';
                 echo '<h1>Heartbeat CMS - System Exception</h1>';
                 echo '<p><strong>' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . '</strong></p>';
@@ -135,7 +135,7 @@ final class Bootstrap
             } else {
                 echo '<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>500 - Server Error</title>';
                 echo '<style>body{background:#090d16;color:#94a3b8;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;}';
-                echo '.box{text-align:center;padding:2rem;} h1{color:#f97316;margin:0 0 1rem;}';
+                echo '.box{text-align:center;padding:2rem;} h1{color:#fb326f;margin:0 0 1rem;}';
                 echo '</style></head><body><div class="box">';
                 echo '<h1>500 - Ein interner Fehler ist aufgetreten</h1>';
                 echo '<p>Der Vorfall wurde im Systemprotokoll erfasst. Bitte wenden Sie sich an Ihren Administrator.</p>';

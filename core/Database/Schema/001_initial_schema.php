@@ -31,6 +31,7 @@ return new class {
         if ($isSqlite) {
             $db->query("CREATE TABLE IF NOT EXISTS {prefix}users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                uuid VARCHAR(36) NOT NULL UNIQUE,
                 username VARCHAR(60) NOT NULL UNIQUE,
                 email VARCHAR(191) NOT NULL UNIQUE,
                 password_hash VARCHAR(255) NOT NULL,
@@ -40,9 +41,11 @@ return new class {
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             );");
             $db->query("CREATE INDEX IF NOT EXISTS idx_users_role ON {prefix}users(role);");
+            $db->query("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_uuid ON {prefix}users(uuid);");
         } else {
             $db->query("CREATE TABLE IF NOT EXISTS {prefix}users (
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                uuid VARCHAR(36) NOT NULL UNIQUE,
                 username VARCHAR(60) NOT NULL UNIQUE,
                 email VARCHAR(191) NOT NULL UNIQUE,
                 password_hash VARCHAR(255) NOT NULL,
@@ -50,7 +53,8 @@ return new class {
                 status VARCHAR(20) NOT NULL DEFAULT 'active',
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                INDEX idx_users_role (role)
+                INDEX idx_users_role (role),
+                UNIQUE INDEX idx_users_uuid (uuid)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
         }
 
@@ -58,6 +62,8 @@ return new class {
         if ($isSqlite) {
             $db->query("CREATE TABLE IF NOT EXISTS {prefix}posts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                uuid VARCHAR(36) NOT NULL UNIQUE,
+                parent_id INTEGER DEFAULT 0,
                 title VARCHAR(255) NOT NULL,
                 slug VARCHAR(191) NOT NULL,
                 content_blocks TEXT,
@@ -71,9 +77,13 @@ return new class {
             );");
             $db->query("CREATE INDEX IF NOT EXISTS idx_posts_slug ON {prefix}posts(slug);");
             $db->query("CREATE INDEX IF NOT EXISTS idx_posts_type_status ON {prefix}posts(post_type, status);");
+            $db->query("CREATE UNIQUE INDEX IF NOT EXISTS idx_posts_uuid ON {prefix}posts(uuid);");
+            $db->query("CREATE INDEX IF NOT EXISTS idx_posts_parent ON {prefix}posts(parent_id);");
         } else {
             $db->query("CREATE TABLE IF NOT EXISTS {prefix}posts (
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                uuid VARCHAR(36) NOT NULL UNIQUE,
+                parent_id BIGINT UNSIGNED DEFAULT 0,
                 title VARCHAR(255) NOT NULL,
                 slug VARCHAR(191) NOT NULL,
                 content_blocks LONGTEXT,
@@ -85,7 +95,9 @@ return new class {
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 published_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 INDEX idx_posts_slug (slug),
-                INDEX idx_posts_type_status (post_type, status)
+                INDEX idx_posts_type_status (post_type, status),
+                UNIQUE INDEX idx_posts_uuid (uuid),
+                INDEX idx_posts_parent (parent_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
         }
 

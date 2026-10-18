@@ -17,7 +17,7 @@
 }
 
 .glow-brand {
-  box-shadow: 0 0 25px -5px rgba(249, 115, 22, 0.3);
+  box-shadow: 0 0 25px -5px rgba(251, 50, 111, 0.3);
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -35,6 +35,6 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #f97316;
+  background: #fb326f;
 }
 

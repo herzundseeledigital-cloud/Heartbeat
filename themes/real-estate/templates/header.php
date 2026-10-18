@@ -15,6 +15,10 @@ $cssVars = isset($theme) ? $theme->getCssVariables() : '';
 $settings = isset($theme) ? $theme->getSettings() : [];
 $containerWidth = Security::e((string)($settings['container_width'] ?? 'max-w-7xl'));
 $navPages = $navPages ?? [];
+if (empty($customCss)) {
+    $themeSlug = isset($theme) && is_object($theme) ? $theme->getSlug() : \Heartbeat\Themes\ThemeService::getInstance()->getActive()->getSlug();
+    $customCss = \Heartbeat\Themes\ThemeService::getInstance()->getCustomCss($themeSlug);
+}
 ?>
 <!DOCTYPE html>
 <html lang="de" class="dark scroll-smooth">
@@ -32,6 +36,9 @@ $navPages = $navPages ?? [];
     </style>
     <link rel="stylesheet" href="/assets/css/installer.css">
     <link rel="stylesheet" href="/assets/css/theme.css">
+    <?php if (!empty($customCss)): ?>
+    <style id="theme-custom-css"><?= $customCss ?></style>
+    <?php endif; ?>
     <script src="/assets/js/alpine.min.js" defer></script>
 </head>
 <body class="bg-[#061a14] text-slate-100 font-sans antialiased selection:bg-[#059669] selection:text-white min-h-screen flex flex-col justify-between"

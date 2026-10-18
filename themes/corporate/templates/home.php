@@ -127,29 +127,103 @@ if (!empty($dbCaseStudies)) {
 ?>
 
 <!-- Hero Section -->
-<section class="py-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-[#070b14] to-[#0a0f1d] border-b border-[#1e293b]">
+<section class="py-16 md:py-24 relative overflow-hidden bg-gradient-to-b from-[#070b14] via-[#090e1c] to-[#0a0f1d] border-b border-[#1e293b]">
+    <!-- Ambient Radial Glow -->
+    <div class="absolute top-1/4 left-1/3 w-[600px] h-[350px] bg-blue-600/10 blur-[130px] rounded-full pointer-events-none"></div>
+
     <div class="<?= $containerWidth ?> mx-auto px-6 relative z-10">
-        <div class="max-w-3xl">
-            <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-6">
-                <span>●</span>
-                <span>Enterprise B2B Software &amp; Digital Solutions</span>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            
+            <!-- Left Column: Copy & Actions -->
+            <div class="lg:col-span-7">
+                <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-6">
+                    <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                    <span>Enterprise B2B Digitalberatung &bull; DACH</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] mb-6">
+                    Skalierbare Software für digitale Marktführer.
+                </h1>
+
+                <p class="text-base sm:text-lg text-slate-300 leading-relaxed mb-8 max-w-xl">
+                    Wir entwickeln hochperformante Unternehmensportale, Headless-Architekturen und Webanwendungen mit kompromisslosem Sicherheitsanspruch nach ISO 27001.
+                </p>
+
+                <!-- Actions -->
+                <div class="flex flex-wrap items-center gap-4 mb-10">
+                    <a href="#contact" class="px-7 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl shadow-blue-500/25 transition transform hover:scale-105">
+                        Strategiegespräch vereinbaren &rarr;
+                    </a>
+                    <a href="#services" class="px-7 py-4 rounded-xl bg-[#1e293b] hover:bg-[#334155] text-slate-200 font-semibold text-sm transition">
+                        Leistungsbereiche &darr;
+                    </a>
+                </div>
+
+                <!-- Rating & Social Proof -->
+                <div class="flex items-center space-x-4 pt-6 border-t border-[#1e293b]">
+                    <div class="flex text-amber-400 text-sm">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <div class="text-xs text-slate-300">
+                        <span class="font-bold text-white">4.9 / 5.0</span>
+                        <span class="text-slate-400 ml-1">&bull; Verifizierte Kundenzufriedenheit (140+ B2B Unternehmen)</span>
+                    </div>
+                </div>
             </div>
 
-            <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-[1.1] mb-6">
-                Skalierbare Software für digitale Marktführer.
-            </h1>
+            <!-- Right Column: Visual Frame with Floating Badges (Insuren Inspiration) -->
+            <div class="lg:col-span-5 relative group">
+                <!-- Background Accent Glow -->
+                <div class="absolute -inset-1 bg-gradient-to-tr from-blue-600/30 via-sky-500/20 to-indigo-500/20 rounded-2xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500"></div>
 
-            <p class="text-base sm:text-lg text-slate-400 leading-relaxed mb-8 max-w-2xl">
-                Wir entwickeln hochperformante Unternehmensportale, Headless-Architekturen und digitale Plattformen mit höchstem Sicherheitsanspruch nach ISO 27001.
-            </p>
+                <!-- Main Image Card -->
+                <div class="relative bg-[#0f172a] border border-[#1e293b] rounded-2xl shadow-2xl overflow-hidden aspect-[4/3] sm:aspect-[16/10]">
+                    <img src="/assets/img/hero-corporate.jpg" alt="Corporate Headquarters and Consulting" class="w-full h-full object-cover object-center transform group-hover:scale-[1.02] transition duration-700 ease-out" loading="eager">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0f1d]/80 via-transparent to-transparent"></div>
+                </div>
 
-            <div class="flex flex-wrap items-center gap-4">
-                <a href="#contact" class="px-7 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-xl shadow-blue-500/25 transition transform hover:scale-105">
-                    Strategiegespräch vereinbaren &rarr;
-                </a>
-                <a href="/referenzen" class="px-7 py-4 rounded-xl bg-[#1e293b] hover:bg-[#334155] text-slate-200 font-semibold text-sm transition">
-                    Fallstudien ansehen
-                </a>
+                <!-- Floating Achievement Card Top Left -->
+                <div class="absolute -top-6 -left-4 sm:-left-6 bg-[#0f172a]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-3.5 shadow-2xl flex items-center space-x-3 text-left max-w-[240px] transform hover:-translate-y-1 transition duration-300">
+                    <div class="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-bold flex-shrink-0">
+                        🛡️
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-white">99.98% Uptime</div>
+                        <div class="text-[10px] text-slate-400">Enterprise SLA &amp; Disaster Recovery</div>
+                    </div>
+                </div>
+
+                <!-- Floating Achievement Card Bottom Right -->
+                <div class="absolute -bottom-6 -right-4 sm:-right-6 bg-[#0f172a]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-3.5 shadow-2xl flex items-center space-x-3 text-left max-w-[240px] transform hover:-translate-y-1 transition duration-300">
+                    <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold flex-shrink-0">
+                        📈
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-white">45 Mio. €</div>
+                        <div class="text-[10px] text-slate-400">Verarbeitetes Transaktionsvolumen</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Trust Ribbon Underneath -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 pt-12 border-t border-[#1e293b] text-center">
+            <div>
+                <div class="text-2xl sm:text-3xl font-black text-white font-mono">15+</div>
+                <div class="text-xs text-slate-400 mt-1">Jahre B2B Markterfahrung</div>
+            </div>
+            <div>
+                <div class="text-2xl sm:text-3xl font-black text-blue-400 font-mono">100%</div>
+                <div class="text-xs text-slate-400 mt-1">Inhouse DACH Entwicklung</div>
+            </div>
+            <div>
+                <div class="text-2xl sm:text-3xl font-black text-white font-mono">ISO 27001</div>
+                <div class="text-xs text-slate-400 mt-1">Zertifizierte Sicherheit</div>
+            </div>
+            <div>
+                <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">0</div>
+                <div class="text-xs text-slate-400 mt-1">Drittanbieter-Tracker</div>
             </div>
         </div>
     </div>

@@ -183,6 +183,15 @@ final class Database
      */
     public function insert(string $table, array $data): int|string
     {
+        if (!isset($data['uuid'])) {
+            $pureTable = str_replace(['{prefix}', $this->prefix], '', $table);
+            if (in_array($pureTable, ['users', 'posts', 'terms', 'options', 'meta_data'], true)) {
+                $data['uuid'] = class_exists(\Heartbeat\Security\Security::class)
+                    ? \Heartbeat\Security\Security::uuid()
+                    : sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+            }
+        }
+
         $tableName = $this->prefix($table);
         $columns = array_keys($data);
         $placeholders = array_map(fn($col) => ':' . $col, $columns);

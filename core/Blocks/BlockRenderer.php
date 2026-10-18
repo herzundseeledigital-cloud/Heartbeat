@@ -40,12 +40,62 @@ final class BlockRenderer
         }
 
         $html = '';
-        foreach ($blocks as $block) {
+        $i = 0;
+        $count = count($blocks);
+
+        while ($i < $count) {
+            $block = $blocks[$i];
             if (!is_array($block) || empty($block['type'])) {
+                $i++;
+                continue;
+            }
+
+            // Group consecutive core/card blocks into a responsive grid
+            if ($block['type'] === 'core/card') {
+                $cardGroup = [];
+                while ($i < $count && is_array($blocks[$i]) && ($blocks[$i]['type'] ?? '') === 'core/card') {
+                    $cardGroup[] = $blocks[$i];
+                    $i++;
+                }
+
+                $cardCount = count($cardGroup);
+                $groupCols = null;
+                foreach ($cardGroup as $cBlock) {
+                    if (isset($cBlock['attrs']['columns']) && (int)$cBlock['attrs']['columns'] > 0) {
+                        $groupCols = (int)$cBlock['attrs']['columns'];
+                        break;
+                    }
+                }
+
+                if ($groupCols !== null && (int)$groupCols > 0) {
+                    $cols = (int)$groupCols;
+                } else {
+                    $cols = match ($cardCount) {
+                        1 => 1,
+                        2 => 2,
+                        4 => 4,
+                        default => 3,
+                    };
+                }
+
+                $gridColsClass = match ($cols) {
+                    1 => 'grid-cols-1',
+                    2 => 'grid-cols-1 md:grid-cols-2',
+                    4 => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+                    default => 'grid-cols-1 md:grid-cols-3',
+                };
+
+                $cardsHtml = '';
+                foreach ($cardGroup as $cBlock) {
+                    $cardsHtml .= $this->renderCard((array)($cBlock['attrs'] ?? []), (array)($cBlock['styles'] ?? []));
+                }
+
+                $html .= "<div class=\"grid {$gridColsClass} gap-6 my-8\">{$cardsHtml}</div>";
                 continue;
             }
 
             $html .= $this->renderBlock($block, $context);
+            $i++;
         }
 
         return $html;
@@ -64,20 +114,21 @@ final class BlockRenderer
         $innerBlocks = (array)($block['innerBlocks'] ?? []);
 
         return match ($type) {
-            'core/hero'      => $this->renderHero($attrs, $styles),
-            'core/heading'   => $this->renderHeading($attrs, $styles),
-            'core/paragraph' => $this->renderParagraph($attrs, $styles),
-            'core/image'     => $this->renderImage($attrs, $styles),
-            'core/button'    => $this->renderButton($attrs, $styles),
-            'core/columns'   => $this->renderColumns($attrs, $styles, $innerBlocks, $context),
-            'core/card'      => $this->renderCard($attrs, $styles),
-            'core/features'  => $this->renderFeatures($attrs, $styles),
-            'core/faq'       => $this->renderFaq($attrs, $styles),
-            'core/quote'     => $this->renderQuote($attrs, $styles),
-            'core/alert'     => $this->renderAlert($attrs, $styles),
-            'core/spacer'    => $this->renderSpacer($attrs, $styles),
-            'core/popup'     => $this->renderPopup($attrs, $styles),
-            default          => $this->renderCustomBlock($type, $attrs, $styles, $innerBlocks, $context),
+            'core/hero'                           => $this->renderHero($attrs, $styles),
+            'core/heading'                        => $this->renderHeading($attrs, $styles),
+            'core/paragraph'                      => $this->renderParagraph($attrs, $styles),
+            'core/image'                          => $this->renderImage($attrs, $styles),
+            'core/button'                         => $this->renderButton($attrs, $styles),
+            'core/columns'                        => $this->renderColumns($attrs, $styles, $innerBlocks, $context),
+            'core/card'                           => $this->renderCard($attrs, $styles),
+            'core/features', 'core/features-grid' => $this->renderFeatures($attrs, $styles),
+            'core/cta-banner'                     => $this->renderCtaBanner($attrs, $styles),
+            'core/faq'                            => $this->renderFaq($attrs, $styles),
+            'core/quote'                          => $this->renderQuote($attrs, $styles),
+            'core/alert'                          => $this->renderAlert($attrs, $styles),
+            'core/spacer'                         => $this->renderSpacer($attrs, $styles),
+            'core/popup'                          => $this->renderPopup($attrs, $styles),
+            default                               => $this->renderCustomBlock($type, $attrs, $styles, $innerBlocks, $context),
         };
     }
 
@@ -86,21 +137,21 @@ final class BlockRenderer
         $headline = Security::e((string)($attrs['headline'] ?? ''));
         $subheadline = Security::e((string)($attrs['subheadline'] ?? ''));
         $badge = Security::e((string)($attrs['badge'] ?? ''));
-        $btn1Text = Security::e((string)($attrs['primary_btn_text'] ?? ''));
-        $btn1Url = Security::e((string)($attrs['primary_btn_url'] ?? '#'));
-        $btn2Text = Security::e((string)($attrs['secondary_btn_text'] ?? ''));
-        $btn2Url = Security::e((string)($attrs['secondary_btn_url'] ?? '#'));
+        $btn1Text = Security::e((string)($attrs['primary_btn_text'] ?? ($attrs['cta_text'] ?? '')));
+        $btn1Url = Security::e((string)($attrs['primary_btn_url'] ?? ($attrs['cta_link'] ?? '#')));
+        $btn2Text = Security::e((string)($attrs['secondary_btn_text'] ?? ($attrs['secondary_text'] ?? '')));
+        $btn2Url = Security::e((string)($attrs['secondary_btn_url'] ?? ($attrs['secondary_link'] ?? '#')));
         $align = ($attrs['alignment'] ?? 'center') === 'left' ? 'text-left' : 'text-center';
         $alignFlex = ($attrs['alignment'] ?? 'center') === 'left' ? 'justify-start' : 'justify-center';
         $bgType = $attrs['bg_type'] ?? 'gradient';
         $customClass = Security::e((string)($styles['class'] ?? ''));
 
         $badgeHtml = $badge !== ''
-            ? "<div class=\"inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-6\"><span>●</span><span>{$badge}</span></div>"
+            ? "<div class=\"inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-semibold mb-6 text-hb-primary\" style=\"background-color: color-mix(in srgb, var(--hb-primary) 10%, transparent); border-color: color-mix(in srgb, var(--hb-primary) 20%, transparent); color: var(--hb-primary);\"><span>●</span><span>{$badge}</span></div>"
             : '';
 
         $btn1Html = $btn1Text !== ''
-            ? "<a href=\"{$btn1Url}\" class=\"inline-flex items-center space-x-2 px-6 py-3.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white font-semibold text-sm transition shadow-lg shadow-orange-500/25\"><span>{$btn1Text}</span><span>&rarr;</span></a>"
+            ? "<a href=\"{$btn1Url}\" class=\"inline-flex items-center space-x-2 px-6 py-3.5 rounded-xl bg-hb-primary bg-hb-primary-hover text-white font-semibold text-sm transition shadow-lg\"><span>{$btn1Text}</span><span>&rarr;</span></a>"
             : '';
 
         $btn2Html = $btn2Text !== ''
@@ -149,7 +200,7 @@ HTML;
         };
 
         $subtitleHtml = $subtitle !== ''
-            ? "<p class=\"text-xs sm:text-sm font-semibold uppercase tracking-wider text-orange-400 mb-2\">{$subtitle}</p>"
+            ? "<p class=\"text-xs sm:text-sm font-semibold uppercase tracking-wider text-hb-primary mb-2\" style=\"color: var(--hb-primary);\">{$subtitle}</p>"
             : '';
 
         return <<<HTML
@@ -239,9 +290,9 @@ HTML;
 
         $variantClasses = match ($variant) {
             'secondary' => 'bg-[#1e293b] hover:bg-[#334155] text-slate-200 border border-slate-700',
-            'outline'   => 'bg-transparent hover:bg-orange-500/10 text-orange-400 border border-orange-500/40',
+            'outline'   => 'bg-transparent text-hb-primary border border-hb-primary hover:bg-slate-800/40',
             'ghost'     => 'bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white',
-            default     => 'bg-[#f97316] hover:bg-[#ea580c] text-white shadow-lg shadow-orange-500/20',
+            default     => 'bg-hb-primary bg-hb-primary-hover text-white shadow-lg',
         };
 
         return <<<HTML
@@ -294,18 +345,18 @@ HTML;
         $customClass = Security::e((string)($styles['class'] ?? ''));
 
         $badgeHtml = $badge !== ''
-            ? "<span class=\"text-[11px] font-bold px-2 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20\">{$badge}</span>"
+            ? "<span class=\"text-[11px] font-bold px-2 py-0.5 rounded border text-hb-primary\" style=\"background-color: color-mix(in srgb, var(--hb-primary) 10%, transparent); border-color: color-mix(in srgb, var(--hb-primary) 20%, transparent); color: var(--hb-primary);\">{$badge}</span>"
             : '';
 
         $titleHtml = $link !== ''
-            ? "<a href=\"{$link}\" class=\"hover:text-orange-400 transition\">{$title}</a>"
+            ? "<a href=\"{$link}\" class=\"hover:text-white transition\">{$title}</a>"
             : $title;
 
         return <<<HTML
 <div class="p-6 bg-[#0f172a] border border-[#1e293b] rounded-2xl hover:border-slate-700 transition flex flex-col justify-between {$customClass}">
     <div>
         <div class="flex items-center justify-between mb-4">
-            <div class="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold text-lg">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg text-hb-primary" style="background-color: color-mix(in srgb, var(--hb-primary) 10%, transparent); color: var(--hb-primary);">
                 {$icon}
             </div>
             {$badgeHtml}
@@ -321,25 +372,31 @@ HTML;
     {
         $cols = (int)($attrs['columns'] ?? 3);
         $gridColsClass = match ($cols) {
+            1       => 'grid-cols-1',
             2       => 'grid-cols-1 md:grid-cols-2',
             4       => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
             default => 'grid-cols-1 md:grid-cols-3',
         };
 
-        $items = (array)($attrs['items'] ?? []);
+        $title = Security::e((string)($attrs['title'] ?? ''));
+        $titleHtml = $title !== ''
+            ? "<h2 class=\"text-2xl sm:text-3xl font-black text-white text-center mb-8 tracking-tight\">{$title}</h2>"
+            : '';
+
+        $items = (array)($attrs['items'] ?? ($attrs['features'] ?? []));
         $itemsHtml = '';
 
         foreach ($items as $item) {
-            $icon = Security::e((string)($item['icon'] ?? '✓'));
-            $title = Security::e((string)($item['title'] ?? ''));
+            $icon = Security::e((string)($item['icon'] ?? '⚡'));
+            $itemTitle = Security::e((string)($item['title'] ?? ''));
             $desc = Security::e((string)($item['description'] ?? ''));
 
             $itemsHtml .= <<<HTML
 <div class="p-6 bg-[#0f172a] border border-[#1e293b] rounded-2xl hover:border-slate-700 transition">
-    <div class="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold text-base mb-4">
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base mb-4 text-hb-primary" style="background-color: color-mix(in srgb, var(--hb-primary) 10%, transparent); color: var(--hb-primary);">
         {$icon}
     </div>
-    <h4 class="text-base font-bold text-white mb-2">{$title}</h4>
+    <h4 class="text-base font-bold text-white mb-2">{$itemTitle}</h4>
     <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">{$desc}</p>
 </div>
 HTML;
@@ -348,8 +405,38 @@ HTML;
         $customClass = Security::e((string)($styles['class'] ?? ''));
 
         return <<<HTML
-<div class="grid {$gridColsClass} gap-6 my-10 {$customClass}">
-    {$itemsHtml}
+<div class="my-12 {$customClass}">
+    {$titleHtml}
+    <div class="grid {$gridColsClass} gap-6">
+        {$itemsHtml}
+    </div>
+</div>
+HTML;
+    }
+
+    private function renderCtaBanner(array $attrs, array $styles): string
+    {
+        $headline = Security::e((string)($attrs['headline'] ?? ''));
+        $subheadline = Security::e((string)($attrs['subheadline'] ?? ''));
+        $button = Security::e((string)($attrs['button'] ?? ($attrs['btn_text'] ?? 'Jetzt starten')));
+        $link = Security::e((string)($attrs['link'] ?? ($attrs['btn_url'] ?? '#contact')));
+        $customClass = Security::e((string)($styles['class'] ?? ''));
+
+        $subHtml = $subheadline !== ''
+            ? "<p class=\"text-sm text-slate-300 max-w-xl mx-auto mb-6 leading-relaxed\">{$subheadline}</p>"
+            : '';
+
+        return <<<HTML
+<div class="my-10 p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-[#141e33] via-[#1a1435] to-[#251025] border border-[#1e293b] text-center shadow-2xl relative overflow-hidden {$customClass}">
+    <div class="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-2xl pointer-events-none" style="background-color: var(--hb-primary); opacity: 0.15;"></div>
+    <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-3">{$headline}</h2>
+    {$subHtml}
+    <div class="mt-6">
+        <a href="{$link}" class="inline-flex items-center space-x-2 px-8 py-3.5 rounded-xl bg-hb-primary bg-hb-primary-hover text-white font-bold text-sm shadow-xl transition transform hover:scale-105">
+            <span>{$button}</span>
+            <span>&rarr;</span>
+        </a>
+    </div>
 </div>
 HTML;
     }
@@ -366,9 +453,10 @@ HTML;
     <template x-for="(item, index) in items" :key="index">
         <div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl overflow-hidden transition">
             <button @click="activeIndex = activeIndex === index ? null : index"
-                    class="w-full p-5 text-left flex items-center justify-between text-sm sm:text-base font-semibold text-white hover:text-orange-400 transition">
+                    class="w-full p-5 text-left flex items-center justify-between text-sm sm:text-base font-semibold text-white hover:text-white transition">
                 <span x-text="item.question"></span>
-                <span class="ml-4 transform transition-transform text-orange-400 font-bold"
+                <span class="ml-4 transform transition-transform text-hb-primary font-bold"
+                      style="color: var(--hb-primary);"
                       :class="activeIndex === index ? 'rotate-180' : ''">&darr;</span>
             </button>
             <div x-show="activeIndex === index" x-cloak class="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-[#1e293b]/60">
@@ -393,7 +481,7 @@ HTML;
 
         $avatarHtml = $avatar !== ''
             ? "<img src=\"{$avatar}\" alt=\"{$author}\" class=\"w-10 h-10 rounded-full object-cover border border-slate-700\">"
-            : "<div class=\"w-10 h-10 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20 flex items-center justify-center font-bold text-xs\">" . strtoupper(substr($author, 0, 2)) . "</div>";
+            : "<div class=\"w-10 h-10 rounded-full border text-hb-primary flex items-center justify-center font-bold text-xs\" style=\"background-color: color-mix(in srgb, var(--hb-primary) 10%, transparent); border-color: color-mix(in srgb, var(--hb-primary) 20%, transparent); color: var(--hb-primary);\">" . strtoupper(substr($author, 0, 2)) . "</div>";
 
         return <<<HTML
 <div class="my-8 p-8 bg-[#0f172a] border border-[#1e293b] rounded-2xl shadow-xl max-w-3xl mx-auto text-center {$customClass}">
@@ -423,8 +511,11 @@ HTML;
             'success' => 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
             'warning' => 'bg-amber-500/10 border-amber-500/30 text-amber-400',
             'alert'   => 'bg-rose-500/10 border-rose-500/30 text-rose-400',
-            default   => 'bg-orange-500/10 border-orange-500/30 text-orange-400',
+            default   => 'text-hb-primary border',
         };
+        $alertStyle = ($type !== 'success' && $type !== 'warning' && $type !== 'alert')
+            ? 'style="background-color: color-mix(in srgb, var(--hb-primary) 10%, transparent); border-color: color-mix(in srgb, var(--hb-primary) 30%, transparent); color: var(--hb-primary);"'
+            : '';
 
         $icon = match ($type) {
             'success' => '✓',
@@ -436,7 +527,7 @@ HTML;
         $titleHtml = $title !== '' ? "<h4 class=\"font-bold text-sm mb-1\">{$title}</h4>" : '';
 
         return <<<HTML
-<div class="my-6 p-4 rounded-xl border flex items-start space-x-3 {$colorClasses} {$customClass}">
+<div class="my-6 p-4 rounded-xl border flex items-start space-x-3 {$colorClasses} {$customClass}" {$alertStyle}>
     <div class="font-bold text-base mt-0.5">{$icon}</div>
     <div class="text-xs leading-relaxed text-slate-200">
         {$titleHtml}
@@ -495,13 +586,13 @@ HTML;
 
             // Paywall locked: Render elegant locked barrier card
             return <<<HTML
-<div class="my-10 p-8 rounded-2xl bg-gradient-to-b from-[#0f172a] to-[#090d16] border border-orange-500/30 shadow-2xl text-center max-w-xl mx-auto">
-    <div class="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-400 mx-auto mb-4 flex items-center justify-center text-xl font-bold">
+<div class="my-10 p-8 rounded-2xl bg-gradient-to-b from-[#0f172a] to-[#090d16] border shadow-2xl text-center max-w-xl mx-auto" style="border-color: color-mix(in srgb, var(--hb-primary) 30%, transparent);">
+    <div class="w-12 h-12 rounded-2xl text-hb-primary mx-auto mb-4 flex items-center justify-center text-xl font-bold" style="background-color: color-mix(in srgb, var(--hb-primary) 10%, transparent); color: var(--hb-primary);">
         🔒
     </div>
     <h3 class="text-xl font-black text-white tracking-tight mb-2">{$title}</h3>
     <p class="text-xs sm:text-sm text-slate-400 leading-relaxed mb-6">{$message}</p>
-    <a href="{$ctaUrl}" class="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white font-semibold text-xs transition shadow-lg shadow-orange-500/25">
+    <a href="{$ctaUrl}" class="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-hb-primary bg-hb-primary-hover text-white font-semibold text-xs transition shadow-lg">
         <span>{$ctaText}</span>
         <span>&rarr;</span>
     </a>
@@ -523,14 +614,15 @@ HTML;
      x-init="{$triggerJs}"
      x-show="show && !dismissed"
      x-cloak
-     class="fixed bottom-5 left-5 right-5 sm:left-auto sm:right-5 max-w-md p-5 bg-[#0f172a] border border-orange-500/40 rounded-2xl shadow-2xl z-50 transition transform duration-300">
+     class="fixed bottom-5 left-5 right-5 sm:left-auto sm:right-5 max-w-md p-5 bg-[#0f172a] border rounded-2xl shadow-2xl z-50 transition transform duration-300"
+     style="border-color: color-mix(in srgb, var(--hb-primary) 40%, transparent);">
     <div class="flex items-start justify-between">
         <h4 class="text-sm font-bold text-white">{$title}</h4>
         <button @click="dismissed = true" class="text-slate-400 hover:text-white transition">&times;</button>
     </div>
     <p class="text-xs text-slate-400 mt-1 mb-4 leading-relaxed">{$message}</p>
     <div class="flex items-center space-x-3">
-        <a href="{$ctaUrl}" class="px-4 py-2 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white font-semibold text-xs transition">
+        <a href="{$ctaUrl}" class="px-4 py-2 rounded-xl bg-hb-primary bg-hb-primary-hover text-white font-semibold text-xs transition">
             {$ctaText}
         </a>
         <button @click="dismissed = true" class="px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white transition">
@@ -550,13 +642,13 @@ HTML;
      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div @click.away="dismissed = true"
          class="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center transform transition-all">
-        <div class="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-400 mx-auto mb-4 flex items-center justify-center text-xl font-bold">
+        <div class="w-12 h-12 rounded-2xl text-hb-primary mx-auto mb-4 flex items-center justify-center text-xl font-bold" style="background-color: color-mix(in srgb, var(--hb-primary) 10%, transparent); color: var(--hb-primary);">
             ⚡
         </div>
         <h3 class="text-xl font-bold text-white mb-2">{$title}</h3>
         <p class="text-xs sm:text-sm text-slate-400 leading-relaxed mb-6">{$message}</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="{$ctaUrl}" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white font-semibold text-xs transition shadow-lg shadow-orange-500/25">
+            <a href="{$ctaUrl}" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-hb-primary bg-hb-primary-hover text-white font-semibold text-xs transition shadow-lg">
                 {$ctaText}
             </a>
             <button @click="dismissed = true" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-[#1e293b] hover:bg-[#334155] text-slate-300 font-medium text-xs transition">

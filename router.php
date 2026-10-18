@@ -11,6 +11,17 @@ $uri = urldecode(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/')
 $publicDir = __DIR__ . '/public';
 $filePath = realpath($publicDir . $uri);
 
+// Handle favicon.ico directly
+if ($uri === '/favicon.ico') {
+    if (file_exists($publicDir . '/favicon.ico')) {
+        header('Content-Type: image/x-icon');
+        readfile($publicDir . '/favicon.ico');
+        exit;
+    }
+    http_response_code(204);
+    exit;
+}
+
 // Block access to sensitive paths or hidden files
 if (preg_match('#/\.(?!well-known)#', $uri) ||
     preg_match('#^/(core|config|storage|plugins|themes/.*\.json|vendor|bin)/#', $uri)) {
@@ -45,7 +56,8 @@ if ($filePath !== false && is_file($filePath) && str_starts_with($filePath, $pub
         header('Content-Type: ' . $mimes[$ext]);
     }
 
-    return false; // Let PHP built-in server stream the file
+    readfile($filePath);
+    exit;
 }
 
 // Forward all other requests to the public front controller

@@ -124,7 +124,7 @@ final class MediaController
     <!-- Header Actions & Search Toolbar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-[#0f172a] border border-[#1e293b] shadow-xl">
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold text-lg">
+            <div class="w-10 h-10 rounded-xl bg-[#fb326f]/10 text-[#fb326f] flex items-center justify-center font-bold text-lg">
                 🖼️
             </div>
             <div>
@@ -136,7 +136,7 @@ final class MediaController
         <div class="flex items-center space-x-3">
             <form method="GET" action="/admin/media" class="relative">
                 <input type="text" name="s" value="{$safeSearch}" placeholder="Dateien durchsuchen..."
-                       class="w-56 pl-9 pr-3 py-2 text-xs rounded-xl bg-[#090d16] border border-[#1e293b] text-white placeholder-slate-500 focus:outline-none focus:border-[#f97316]">
+                       class="w-56 pl-9 pr-3 py-2 text-xs rounded-xl bg-[#090d16] border border-[#1e293b] text-white placeholder-slate-500 focus:outline-none focus:border-[#fb326f]">
                 <svg class="w-4 h-4 text-slate-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </form>
 
@@ -150,18 +150,18 @@ final class MediaController
 
     <!-- Drag & Drop Upload Zone -->
     <div @dragover.prevent
-         @drop.prevent="handleDrop($event)"
-         class="border-2 border-dashed border-[#1e293b] hover:border-orange-500/50 rounded-2xl p-8 text-center transition bg-[#0f172a]/50 relative">
+         @drop.prevent="handleDrop(\$event)"
+         class="border-2 border-dashed border-[#1e293b] hover:border-[#fb326f]/50 rounded-2xl p-8 text-center transition bg-[#0f172a]/50 relative">
         
-        <input type="file" id="media-file-input" @change="handleFileSelect($event)" class="hidden" accept="image/*,application/pdf">
+        <input type="file" id="media-file-input" @change="handleFileSelect(\$event)" class="hidden" accept="image/*,application/pdf">
 
         <div x-show="!uploading" class="space-y-3">
-            <div class="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-400 mx-auto flex items-center justify-center text-xl font-bold">
-                ☁️
+            <div class="w-12 h-12 rounded-2xl bg-[#fb326f]/10 text-[#fb326f] mx-auto flex items-center justify-center">
+                <span class="material-symbols-outlined text-[28px]">cloud_upload</span>
             </div>
             <div>
-                <label for="media-file-input" class="text-sm font-bold text-white hover:text-orange-400 cursor-pointer transition">
-                    Dateien hier ablegen oder <span class="text-orange-400 underline decoration-orange-500/40">durchsuchen</span>
+                <label for="media-file-input" class="text-sm font-bold text-white hover:text-[#fb326f] cursor-pointer transition">
+                    Dateien hier ablegen oder <span class="text-[#fb326f] underline decoration-[#fb326f]/40">durchsuchen</span>
                 </label>
                 <p class="text-xs text-slate-500 mt-1">Unterstützt JPG, PNG, WebP, AVIF, GIF, SVG, PDF. Bilder werden automatisch optimiert.</p>
             </div>
@@ -171,7 +171,7 @@ final class MediaController
         <div x-show="uploading" x-cloak class="space-y-3 max-w-xs mx-auto py-2">
             <div class="text-xs font-semibold text-slate-300">Wird hochgeladen und konvertiert...</div>
             <div class="w-full h-2 bg-[#090d16] rounded-full overflow-hidden border border-[#1e293b]">
-                <div class="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-300"
+                <div class="h-full bg-gradient-to-r from-[#fb326f] to-[#e01e5a] transition-all duration-300"
                      :style="'width: ' + uploadProgress + '%'"></div>
             </div>
         </div>
@@ -181,7 +181,7 @@ final class MediaController
     <div x-show="viewMode === 'grid'" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         <template x-for="item in mediaList" :key="item.id">
             <div @click="openDetail(item)"
-                 class="group relative bg-[#0f172a] border border-[#1e293b] hover:border-orange-500/40 rounded-2xl p-2 cursor-pointer transition shadow-lg overflow-hidden flex flex-col justify-between">
+                 class="group relative bg-[#0f172a] border border-[#1e293b] hover:border-[#fb326f]/40 rounded-2xl p-2 cursor-pointer transition shadow-lg overflow-hidden flex flex-col justify-between">
                 <div class="aspect-square rounded-xl bg-[#090d16] overflow-hidden flex items-center justify-center relative">
                     <template x-if="item._mime_type && item._mime_type.startsWith('image/')">
                         <img :src="item._webp_url || item._url" :alt="item.title" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
@@ -241,7 +241,7 @@ final class MediaController
                                 <span x-show="!item._webp_url" class="text-[10px] text-slate-500">-</span>
                             </td>
                             <td class="py-2.5 px-4 text-right space-x-2">
-                                <button type="button" @click="openDetail(item)" class="text-xs text-orange-400 hover:text-orange-300 font-semibold">Details</button>
+                                <button type="button" @click="openDetail(item)" class="text-xs text-[#fb326f] hover:text-[#fb326f] font-semibold">Details</button>
                             </td>
                         </tr>
                     </template>
@@ -260,7 +260,7 @@ final class MediaController
     </template>
 
     <!-- Detail Modal -->
-    <div x-show="detailModalOpen" x-cloak
+    <div x-show="detailModalOpen" x-cloak style="display: none;"
          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
         <div @click.away="closeDetail()"
              class="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 max-w-2xl w-full shadow-2xl relative transform transition-all">
@@ -312,7 +312,7 @@ final class MediaController
                                 <input type="text" readonly :value="selectedItem._url"
                                        class="w-full px-3 py-1.5 rounded-lg bg-[#090d16] border border-[#1e293b] text-xs font-mono text-slate-300 focus:outline-none">
                                 <button type="button" @click="copyUrl(selectedItem._url)"
-                                        class="px-3 py-1.5 rounded-lg bg-[#141e33] hover:bg-[#1e293b] text-orange-400 font-semibold transition flex-shrink-0">
+                                        class="px-3 py-1.5 rounded-lg bg-[#141e33] hover:bg-[#1e293b] text-[#fb326f] font-semibold transition flex-shrink-0">
                                     Kopieren
                                 </button>
                             </div>

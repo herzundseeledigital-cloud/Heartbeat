@@ -245,27 +245,113 @@ $propertiesJson = json_encode($properties, JSON_HEX_TAG | JSON_HEX_APOS | JSON_H
     }
 }">
 
-    <!-- Real Estate Hero Section -->
-    <section class="py-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-[#04120e] to-[#061a14] border-b border-[#134e3a]">
-        <div class="<?= $containerWidth ?> mx-auto px-6 relative z-10 text-center">
-            <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold mb-6">
-                <span>●</span>
-                <span>Exklusive Immobilien in den begehrtesten Lagen</span>
+    <!-- Real Estate Hero Section (MaisonCo Inspiration) -->
+    <section class="py-16 md:py-24 relative overflow-hidden bg-gradient-to-b from-[#03100c] via-[#051711] to-[#061a14] border-b border-[#134e3a]">
+        <!-- Ambient Emerald Glow -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-600/10 blur-[150px] rounded-full pointer-events-none"></div>
+
+        <div class="<?= $containerWidth ?> mx-auto px-6 relative z-10">
+            <!-- Header Text & Badge -->
+            <div class="text-center max-w-4xl mx-auto mb-12">
+                <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold mb-6">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Signature Architektur &bull; Exklusives Wohnen mit Weitblick</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tight leading-[1.08] mb-6">
+                    The Grand Horizon Penthouse
+                </h1>
+
+                <p class="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed mb-8">
+                    Raumhohe Panorama-Verglasung, 360°-Skyline-Blick und privater Dachgarten. Ein Refugium höchster Wohnkultur im begehrten Westend.
+                </p>
+
+                <!-- Spec Pills Ribbon -->
+                <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 mb-8 text-xs font-semibold text-slate-200">
+                    <span class="px-3.5 py-1.5 rounded-lg bg-[#0a2e23] border border-[#134e3a] flex items-center space-x-1.5">
+                        <span class="text-emerald-400">📐</span>
+                        <span>320 m² Wohnfläche</span>
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-lg bg-[#0a2e23] border border-[#134e3a] flex items-center space-x-1.5">
+                        <span class="text-emerald-400">🛋️</span>
+                        <span>5.0 Zimmer</span>
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-lg bg-[#0a2e23] border border-[#134e3a] flex items-center space-x-1.5">
+                        <span class="text-emerald-400">🌿</span>
+                        <span>140 m² Dachgarten</span>
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-lg bg-[#0a2e23] border border-[#134e3a] flex items-center space-x-1.5">
+                        <span class="text-emerald-400">⚡</span>
+                        <span>KfW 40 Plus</span>
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold">
+                        2.450.000 €
+                    </span>
+                </div>
+
+                <!-- CTA Actions -->
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <button type="button" @click="openInquiry({ id: 101, title: 'The Grand Horizon Penthouse', price: 2450000 })" class="px-8 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-emerald-600/25 transition transform hover:scale-105">
+                        Exposé anfordern &rarr;
+                    </button>
+                    <a href="#properties" class="px-8 py-4 rounded-xl bg-[#0a2e23] hover:bg-[#134e3a] border border-[#134e3a] text-slate-200 font-semibold text-sm transition">
+                        Alle Immobilien ansehen &darr;
+                    </a>
+                </div>
             </div>
 
-            <h1 class="text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tight leading-tight max-w-4xl mx-auto mb-6">
-                Finden Sie Ihr neues Zuhause mit bleibendem Wert.
-            </h1>
+            <!-- Architectural Showcase Frame with Floating Badges -->
+            <div class="relative max-w-5xl mx-auto group">
+                <!-- Ambient Glow behind frame -->
+                <div class="absolute -inset-1 bg-gradient-to-r from-emerald-600/30 via-teal-500/20 to-emerald-800/20 rounded-2xl blur-xl opacity-75 group-hover:opacity-100 transition duration-700"></div>
 
-            <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed mb-10">
-                Entdecken Sie unser erstklassiges Portfolio an Wohnungen, Penthouses und Villen – diskret, professionell und transparent vermittelt.
-            </p>
+                <div class="relative bg-[#061a14] border border-[#134e3a] rounded-2xl shadow-2xl overflow-hidden aspect-[16/9]">
+                    <img src="/assets/img/hero-realestate.jpg" alt="The Grand Horizon Penthouse - Luxury Architecture" class="w-full h-full object-cover object-center transform group-hover:scale-[1.02] transition duration-700 ease-out" loading="eager">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#061a14] via-transparent to-transparent opacity-60"></div>
+                </div>
 
-            <!-- Quick Jump to Filter Bar -->
-            <a href="#properties" class="inline-flex items-center space-x-2 px-8 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-xl shadow-emerald-500/25 transition transform hover:scale-105">
-                <span>Aktuelle Angebote durchsuchen</span>
-                <span>&darr;</span>
-            </a>
+                <!-- Floating Luxury Badge Left -->
+                <div class="absolute -bottom-6 -left-4 sm:left-6 bg-[#0a2e23]/95 backdrop-blur-md border border-[#134e3a] rounded-xl p-4 shadow-2xl flex items-center space-x-3 text-left max-w-[280px] transform hover:-translate-y-1 transition duration-300">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-lg text-emerald-400 flex-shrink-0">
+                        🔑
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-white">Privater Aufzugszugang</div>
+                        <div class="text-[11px] text-slate-300 mt-0.5">2 Tiefgaragen-Plätze mit Wallbox &amp; KNX Smart Home</div>
+                    </div>
+                </div>
+
+                <!-- Floating Luxury Badge Right -->
+                <div class="absolute -top-6 -right-4 sm:right-6 bg-[#0a2e23]/95 backdrop-blur-md border border-[#134e3a] rounded-xl p-4 shadow-2xl flex items-center space-x-3 text-left max-w-[260px] transform hover:-translate-y-1 transition duration-300">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-lg text-emerald-400 flex-shrink-0">
+                        🏆
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-white">Off-Market Exklusivität</div>
+                        <div class="text-[11px] text-slate-300 mt-0.5">Diskrete Vermittlung &bull; IVD geprüft</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust KPI Strip -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 pt-12 border-t border-[#134e3a]/80 max-w-4xl mx-auto text-center">
+                <div>
+                    <div class="text-2xl sm:text-3xl font-black text-white font-mono">25+</div>
+                    <div class="text-xs text-emerald-300/80 mt-1">Jahre Makler-Expertise</div>
+                </div>
+                <div>
+                    <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">1.400+</div>
+                    <div class="text-xs text-emerald-300/80 mt-1">Vermittelte Traumimmobilien</div>
+                </div>
+                <div>
+                    <div class="text-2xl sm:text-3xl font-black text-white font-mono">100%</div>
+                    <div class="text-xs text-emerald-300/80 mt-1">Diskrete Abwicklung</div>
+                </div>
+                <div>
+                    <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">IVD</div>
+                    <div class="text-xs text-emerald-300/80 mt-1">Verbandszertifiziert</div>
+                </div>
+            </div>
         </div>
     </section>
 

@@ -91,7 +91,7 @@ final class AgencyModulesController
 <tr class="border-b border-[#1e293b] hover:bg-[#141e33]/50 transition">
     <td class="py-3 px-4 text-xs font-mono text-slate-200">{$path}</td>
     <td class="py-3 px-4 text-xs text-right font-bold text-white">{$views}</td>
-    <td class="py-3 px-4 text-xs text-right text-orange-400 font-mono">{$uniques}</td>
+    <td class="py-3 px-4 text-xs text-right text-[#fb326f] font-mono">{$uniques}</td>
 </tr>
 HTML;
             }
@@ -132,7 +132,7 @@ HTML;
             $dFormatted = date('d.m', strtotime($d['date']));
             $chartBars .= <<<HTML
 <div class="flex-1 flex flex-col items-center group relative">
-    <div class="w-full bg-[#1e293b] rounded-t-md hover:bg-orange-500 transition-colors" style="height: {$h}%;"></div>
+    <div class="w-full bg-[#1e293b] rounded-t-md hover:bg-[#fb326f] transition-colors" style="height: {$h}%;"></div>
     <span class="text-[9px] text-slate-500 mt-2 font-mono hidden sm:block">{$dFormatted}</span>
     <!-- Tooltip -->
     <div class="absolute bottom-full mb-2 hidden group-hover:block bg-[#0f172a] border border-[#1e293b] text-white text-[10px] py-1 px-2 rounded shadow-xl whitespace-nowrap z-20">
@@ -170,7 +170,7 @@ HTML;
         </div>
         <div class="p-5 bg-[#0f172a] border border-[#1e293b] rounded-2xl shadow-lg">
             <span class="text-xs font-semibold text-slate-400 block mb-1">Eindeutige Besucher ({$days} Tage)</span>
-            <div class="text-2xl font-black text-orange-400 tracking-tight">{$totalUniques}</div>
+            <div class="text-2xl font-black text-[#fb326f] tracking-tight">{$totalUniques}</div>
             <p class="text-[11px] text-slate-500 mt-1">Anonymisierte Daily Hashes</p>
         </div>
         <div class="p-5 bg-[#0f172a] border border-[#1e293b] rounded-2xl shadow-lg">
@@ -226,7 +226,7 @@ HTML;
                             <span class="text-white font-bold">{$desktopPct}%</span>
                         </div>
                         <div class="w-full bg-[#090d16] rounded-full h-2">
-                            <div class="bg-orange-500 h-2 rounded-full" style="width: {$desktopPct}%"></div>
+                            <div class="bg-[#fb326f] h-2 rounded-full" style="width: {$desktopPct}%"></div>
                         </div>
                     </div>
                     <div>
@@ -278,7 +278,7 @@ HTML;
     private function filterBtnClass(int $current, int $target): string
     {
         return $current === $target
-            ? 'bg-orange-500 text-white font-bold'
+            ? 'bg-[#fb326f] text-white font-bold'
             : 'bg-[#141e33] text-slate-400 hover:text-white border border-[#1e293b]';
     }
 
@@ -330,18 +330,18 @@ HTML;
 <div class="max-w-4xl space-y-6" x-data="{ tab: 'seo' }">
     <!-- Tabs Header -->
     <div class="flex border-b border-[#1e293b] space-x-2">
-        <button @click="tab = 'seo'" :class="tab === 'seo' ? 'border-[#f97316] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
+        <button @click="tab = 'seo'" :class="tab === 'seo' ? 'border-[#fb326f] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
                 class="py-3 px-4 border-b-2 text-xs font-medium transition">
             SEO &amp; OpenGraph Standardwerte
         </button>
-        <button @click="tab = 'sitemap'" :class="tab === 'sitemap' ? 'border-[#f97316] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
+        <button @click="tab = 'sitemap'" :class="tab === 'sitemap' ? 'border-[#fb326f] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
                 class="py-3 px-4 border-b-2 text-xs font-medium transition">
             XML Sitemap
         </button>
-        <button @click="tab = 'ai'" :class="tab === 'ai' ? 'border-[#f97316] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
+        <button @click="tab = 'ai'" :class="tab === 'ai' ? 'border-[#fb326f] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
                 class="py-3 px-4 border-b-2 text-xs font-medium transition flex items-center space-x-1.5">
             <span>AI Copy &amp; Meta Assistant</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">Gemini/OpenAI</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#fb326f]/10 text-[#fb326f] border border-[#fb326f]/20">Gemini/OpenAI</span>
         </button>
     </div>
 
@@ -353,20 +353,20 @@ HTML;
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Standard Titel-Template</label>
                 <input type="text" name="seo_default_title" value="{$seoTitle}" required
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 <span class="text-[11px] text-slate-500 mt-1 block">Variablen: %title%, %sitename%</span>
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Globale Meta-Beschreibung (Fallback)</label>
                 <textarea name="seo_default_description" rows="3"
-                          class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">{$seoDesc}</textarea>
+                          class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">{$seoDesc}</textarea>
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Standard Social Share Bild (OpenGraph &amp; Twitter)</label>
                 <input type="text" name="seo_default_og_image" value="{$ogImage}" placeholder="/uploads/og-default.jpg"
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 <span class="text-[11px] text-slate-500 mt-1 block">Empfohlene Auflösung: 1200 x 630 Pixel.</span>
             </div>
         </div>
@@ -380,7 +380,7 @@ HTML;
                 </div>
                 <a href="/sitemap.xml" target="_blank" class="px-4 py-2 rounded-xl bg-[#141e33] hover:bg-[#1e293b] border border-[#1e293b] text-xs font-semibold text-white transition flex items-center space-x-1.5">
                     <span>Sitemap ansehen</span>
-                    <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    <svg class="w-3.5 h-3.5 text-[#fb326f]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                 </a>
             </div>
         </div>
@@ -390,7 +390,7 @@ HTML;
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">AI-Anbieter</label>
-                    <select name="ai_provider" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                    <select name="ai_provider" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                         <option value="gemini" {$this->selected($aiProvider, 'gemini')}>Google Gemini (Empfohlen &amp; Kosteneffizient)</option>
                         <option value="openai" {$this->selected($aiProvider, 'openai')}>OpenAI (GPT-4o / GPT-4o-mini)</option>
                         <option value="anthropic" {$this->selected($aiProvider, 'anthropic')}>Anthropic Claude (Haiku / Sonnet)</option>
@@ -399,20 +399,20 @@ HTML;
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Modell-Identifier</label>
                     <input type="text" name="ai_model" value="{$aiModel}" placeholder="z.B. gemini-1.5-flash oder gpt-4o-mini"
-                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 </div>
             </div>
 
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">API-Schlüssel</label>
                 <input type="password" name="ai_api_key" value="{$aiApiKey}" placeholder="••••••••••••••••••••••••••••••••"
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 <span class="text-[11px] text-slate-500 mt-1 block">Wird sicher in der Datenbank gespeichert und ausschließlich server-seitig via cURL verwendet.</span>
             </div>
         </div>
 
         <div class="flex items-center justify-end space-x-3 pt-6 border-t border-[#1e293b]">
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20">
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20">
                 Einstellungen speichern
             </button>
         </div>
@@ -507,7 +507,7 @@ HTML;
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Standard Versand-Treiber</label>
-                <select name="mail_driver" x-model="driver" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                <select name="mail_driver" x-model="driver" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                     <option value="resend">Resend REST API (Empfohlen für Agenturen &amp; Kunden)</option>
                     <option value="smtp">Nativer SMTP-Treiber (Shared Hosting Fallback)</option>
                     <option value="log">Lokaler Log-Treiber (storage/logs/mail.log)</option>
@@ -516,7 +516,7 @@ HTML;
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Absender-Name</label>
                 <input type="text" name="mail_from_name" value="{$fromName}" required
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             </div>
         </div>
 
@@ -524,13 +524,13 @@ HTML;
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Absender E-Mail</label>
                 <input type="email" name="mail_from_email" value="{$fromEmail}" required
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 <span class="text-[11px] text-slate-500 mt-1 block">Bei Resend muss die Domain verifiziert sein.</span>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Antwort an (Reply-To, optional)</label>
                 <input type="email" name="mail_reply_to" value="{$replyTo}"
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             </div>
         </div>
 
@@ -540,7 +540,7 @@ HTML;
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Resend API Key</label>
                 <input type="password" name="resend_api_key" value="{$resendKey}" placeholder="re_••••••••••••••••••••"
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             </div>
         </div>
 
@@ -551,19 +551,19 @@ HTML;
                 <div class="sm:col-span-2">
                     <label class="block text-xs font-semibold text-slate-300 mb-1">SMTP-Host</label>
                     <input type="text" name="smtp_host" value="{$smtpHost}" placeholder="smtp.webgo.de oder smtp.ionos.de"
-                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Port</label>
                     <input type="number" name="smtp_port" value="{$smtpPort}"
-                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Verschlüsselung</label>
-                    <select name="smtp_encryption" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                    <select name="smtp_encryption" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                         <option value="tls" {$this->selected($smtpEnc, 'tls')}>STARTTLS (Port 587)</option>
                         <option value="ssl" {$this->selected($smtpEnc, 'ssl')}>SSL/TLS (Port 465)</option>
                         <option value="none" {$this->selected($smtpEnc, 'none')}>Keine (Port 25)</option>
@@ -572,18 +572,18 @@ HTML;
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">SMTP-Benutzername</label>
                     <input type="text" name="smtp_user" value="{$smtpUser}"
-                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">SMTP-Passwort</label>
                     <input type="password" name="smtp_pass" value="{$smtpPass}"
-                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f172a] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 </div>
             </div>
         </div>
 
         <div class="flex items-center justify-end space-x-3 pt-6 border-t border-[#1e293b]">
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20">
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20">
                 Einstellungen speichern
             </button>
         </div>
@@ -597,7 +597,7 @@ HTML;
         <form method="POST" action="/admin/mail/test" class="flex flex-col sm:flex-row items-center gap-3">
             {$csrfField}
             <input type="email" name="test_recipient" placeholder="empfaenger@beispiel.de" required
-                   class="w-full sm:w-80 px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                   class="w-full sm:w-80 px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             <button type="submit" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#141e33] hover:bg-[#1e293b] border border-[#1e293b] text-slate-200 text-xs font-semibold transition flex items-center space-x-2">
                 <span>Test-E-Mail senden &rarr;</span>
             </button>
@@ -665,7 +665,7 @@ HTML;
                 $rowsHtml .= <<<HTML
 <tr class="border-b border-[#1e293b] hover:bg-[#141e33]/50 transition">
     <td class="py-3 px-4 text-xs font-mono text-white flex items-center space-x-2">
-        <svg class="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+        <svg class="w-4 h-4 text-[#fb326f] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
         <span>{$fname}</span>
     </td>
     <td class="py-3 px-4 text-xs text-slate-400 font-mono">{$size}</td>
@@ -690,7 +690,7 @@ HTML;
 <form method="POST" action="/admin/backups/create" class="flex items-center space-x-2">
     {$csrfField}
     <input type="hidden" name="type" value="full">
-    <button type="submit" class="px-4 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20 transition flex items-center space-x-2">
+    <button type="submit" class="px-4 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20 transition flex items-center space-x-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
         <span>1-Klick Backup erstellen</span>
     </button>
@@ -700,7 +700,7 @@ HTML;
         $contentHtml = <<<HTML
 <div class="space-y-6">
     <!-- Zero-Exec Notice -->
-    <div class="p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs flex items-center space-x-3">
+    <div class="p-4 rounded-2xl bg-[#fb326f]/10 border border-[#fb326f]/20 text-[#fb326f] text-xs flex items-center space-x-3">
         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
         <span><strong>Zero-Exec Technologie:</strong> Backups werden via PDO-Tabellen-Streaming und PHP ZipArchive erzeugt. Funktioniert auf jedem Shared Hosting ohne SSH, exec() oder mysqldump.</span>
     </div>
@@ -733,7 +733,7 @@ HTML;
         <h3 class="text-sm font-bold text-white mb-2">Automatisierte Cronjob-Sicherung</h3>
         <p class="text-xs text-slate-400 mb-4">Richten Sie bei Ihrem Webhoster einen periodischen Web-Aufruf (GET) auf folgende gesicherte URL ein:</p>
         <div class="flex items-center space-x-3 p-3 rounded-xl bg-[#090d16] border border-[#1e293b] font-mono text-xs text-slate-300 overflow-x-auto">
-            <span class="text-orange-400 font-bold select-none">URL:</span>
+            <span class="text-[#fb326f] font-bold select-none">URL:</span>
             <span class="select-all">{$cronUrl}</span>
         </div>
     </div>
@@ -847,7 +847,7 @@ HTML;
         $csrfField = $this->csrfField();
 
         $statusBadge = $hasUpdate
-            ? '<span class="px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 font-bold text-xs border border-orange-500/30">Update verfügbar!</span>'
+            ? '<span class="px-3 py-1 rounded-full bg-[#fb326f]/20 text-[#fb326f] font-bold text-xs border border-[#fb326f]/30">Update verfügbar!</span>'
             : '<span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs border border-emerald-500/30">System auf dem neuesten Stand</span>';
 
         $updateButtonHtml = '';
@@ -856,7 +856,7 @@ HTML;
 <form method="POST" action="/admin/updater/apply" class="mt-4" onsubmit="return confirm('Möchten Sie das Update jetzt durchführen? Es wird automatisch ein Sicherheits-Backup erstellt.');">
     {$csrfField}
     <input type="hidden" name="download_url" value="{$updateInfo['download_url']}">
-    <button type="submit" class="px-6 py-3 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-bold shadow-lg shadow-orange-500/25 transition">
+    <button type="submit" class="px-6 py-3 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-bold shadow-lg shadow-[#fb326f]/25 transition">
         1-Klick Update auf v{$latestVer} starten &rarr;
     </button>
 </form>
@@ -903,12 +903,12 @@ HTML;
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">GitHub Repository (Owner/Repo)</label>
                 <input type="text" name="updater_repo" value="{$repo}" required
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">GitHub Personal Access Token (für private Repos)</label>
                 <input type="password" name="updater_github_token" value="{$token}" placeholder="ghp_••••••••••••••••••••••••••••••••••••"
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             </div>
         </div>
         <div class="flex items-center justify-end pt-4 border-t border-[#1e293b]">
@@ -971,7 +971,7 @@ HTML;
                 $fontsRowsHtml .= <<<HTML
 <tr class="border-b border-[#1e293b] hover:bg-[#141e33]/50 transition">
     <td class="py-3 px-4 text-xs font-bold text-white capitalize">{$slug}</td>
-    <td class="py-3 px-4 text-xs font-mono text-orange-400">&lt;link rel="stylesheet" href="{$url}"&gt;</td>
+    <td class="py-3 px-4 text-xs font-mono text-[#fb326f]">&lt;link rel="stylesheet" href="{$url}"&gt;</td>
     <td class="py-3 px-4 text-xs text-slate-400">{$mod}</td>
 </tr>
 HTML;
@@ -982,11 +982,11 @@ HTML;
 <div class="max-w-4xl space-y-6" x-data="{ tab: 'fonts' }">
     <!-- Tabs Header -->
     <div class="flex border-b border-[#1e293b] space-x-2">
-        <button @click="tab = 'fonts'" :class="tab === 'fonts' ? 'border-[#f97316] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
+        <button @click="tab = 'fonts'" :class="tab === 'fonts' ? 'border-[#fb326f] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
                 class="py-3 px-4 border-b-2 text-xs font-medium transition">
             Google Fonts Downloader
         </button>
-        <button @click="tab = 'rights'" :class="tab === 'rights' ? 'border-[#f97316] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
+        <button @click="tab = 'rights'" :class="tab === 'rights' ? 'border-[#fb326f] text-white font-bold' : 'border-transparent text-slate-400 hover:text-slate-200'"
                 class="py-3 px-4 border-b-2 text-xs font-medium transition">
             DSGVO Betroffenenrechte (Art. 15 / 17)
         </button>
@@ -1007,8 +1007,8 @@ HTML;
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Google Fonts CSS URL oder Schriftfamilien-Name</label>
                 <div class="flex flex-col sm:flex-row gap-3">
                     <input type="text" name="font_input" placeholder="z.B. Plus Jakarta Sans oder https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" required
-                           class="flex-1 px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
-                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20 transition whitespace-nowrap">
+                           class="flex-1 px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20 transition whitespace-nowrap">
                         Herunterladen &amp; Hosten
                     </button>
                 </div>
@@ -1045,7 +1045,7 @@ HTML;
             <form method="POST" action="/admin/gdpr/export-user" class="flex flex-col sm:flex-row gap-3">
                 {$csrfField}
                 <input type="number" name="user_id" placeholder="Benutzer-ID" required
-                       class="w-full sm:w-48 px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full sm:w-48 px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#141e33] hover:bg-[#1e293b] border border-[#1e293b] text-slate-200 text-xs font-semibold transition">
                     JSON-Datenexport generieren
                 </button>
@@ -1058,7 +1058,7 @@ HTML;
             <form method="POST" action="/admin/gdpr/anonymize-user" class="flex flex-col sm:flex-row gap-3" onsubmit="return confirm('Möchten Sie diesen Benutzer wirklich unwiderruflich anonymisieren?');">
                 {$csrfField}
                 <input type="number" name="user_id" placeholder="Benutzer-ID" required
-                       class="w-full sm:w-48 px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full sm:w-48 px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                 <button type="submit" class="px-5 py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-semibold transition">
                     Benutzer jetzt anonymisieren
                 </button>
@@ -1219,21 +1219,21 @@ HTML;
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" name="stripe_enabled" value="1" {$this->checked($enabled)} class="sr-only peer">
-                <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f97316]"></div>
+                <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#fb326f]"></div>
             </label>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Betriebsmodus</label>
-                <select name="stripe_mode" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                <select name="stripe_mode" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                     <option value="test" {$this->selected($mode, 'test')}>Test-Modus (Sandbox)</option>
                     <option value="live" {$this->selected($mode, 'live')}>Live-Modus (Echte Zahlungen)</option>
                 </select>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Standardwährung</label>
-                <select name="stripe_currency" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                <select name="stripe_currency" class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
                     <option value="eur" {$this->selected($currency, 'eur')}>EUR (€)</option>
                     <option value="chf" {$this->selected($currency, 'chf')}>CHF</option>
                     <option value="usd" {$this->selected($currency, 'usd')}>USD ($)</option>
@@ -1245,29 +1245,29 @@ HTML;
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Stripe Secret Key</label>
                 <input type="password" name="stripe_secret_key" value="{$secretKey}" placeholder="sk_test_••••••••••••••••••••"
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Stripe Publishable Key</label>
                 <input type="text" name="stripe_publishable_key" value="{$pubKey}" placeholder="pk_test_••••••••••••••••••••"
-                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             </div>
         </div>
 
         <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Stripe Webhook Signing Secret</label>
             <input type="password" name="stripe_webhook_secret" value="{$webhookSecret}" placeholder="whsec_••••••••••••••••••••"
-                   class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#f97316]">
+                   class="w-full px-3.5 py-2.5 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs text-white focus:outline-none focus:border-[#fb326f]">
             <span class="text-[11px] text-slate-500 mt-1 block">Zur kryptografischen Verifizierung eingehender Webhooks im puren PHP-Code.</span>
         </div>
 
         <div class="p-4 rounded-xl bg-[#090d16] border border-[#1e293b] text-xs">
             <span class="text-slate-400 block mb-1 font-semibold">Ihre Stripe Webhook-URL (im Stripe Dashboard eintragen):</span>
-            <span class="font-mono text-orange-400 select-all">{$webhookEndpoint}</span>
+            <span class="font-mono text-[#fb326f] select-all">{$webhookEndpoint}</span>
         </div>
 
         <div class="flex items-center justify-end space-x-3 pt-6 border-t border-[#1e293b]">
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20">
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20">
                 Stripe-Einstellungen speichern
             </button>
         </div>

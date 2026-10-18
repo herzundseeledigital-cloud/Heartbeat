@@ -1,0 +1,5 @@
+/* Special characters test: > < " ' & */
+div.container > ul.menu > li:last-child {
+  content: "Double \"quotes\" and 'single' quotes & ampersand";
+  font-family: 'Times New Roman', serif;
+}

@@ -87,7 +87,7 @@ final class CustomCodeController
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" name="enabled" value="1" {$enabledChecked} class="sr-only peer">
-                <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f97316]"></div>
+                <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#fb326f]"></div>
             </label>
         </div>
 
@@ -99,7 +99,7 @@ final class CustomCodeController
             </div>
             <p class="text-xs text-slate-400">Geeignet für Meta-Tags, Canonical-Links, Tracking-Header oder externe Stylesheets.</p>
             <textarea name="head_code" rows="5" placeholder="<!-- z.B. <meta name='google-site-verification' content='...' /> -->"
-                      class="w-full p-4 rounded-xl bg-[#090d16] border border-[#1e293b] text-white font-mono text-xs focus:outline-none focus:border-[#f97316] leading-relaxed selection:bg-orange-500/30">{$headCode}</textarea>
+                      class="w-full p-4 rounded-xl bg-[#090d16] border border-[#1e293b] text-white font-mono text-xs focus:outline-none focus:border-[#fb326f] leading-relaxed selection:bg-[#fb326f]/30">{$headCode}</textarea>
         </div>
 
         <!-- 2. Opening Body Code -->
@@ -110,7 +110,7 @@ final class CustomCodeController
             </div>
             <p class="text-xs text-slate-400">Geeignet für Google Tag Manager &lt;noscript&gt; oder Barrierefreiheits-Skip-Links.</p>
             <textarea name="body_start_code" rows="5" placeholder="<!-- z.B. <noscript><iframe src='https://www.googletagmanager.com/ns.html?id=...' ...></iframe></noscript> -->"
-                      class="w-full p-4 rounded-xl bg-[#090d16] border border-[#1e293b] text-white font-mono text-xs focus:outline-none focus:border-[#f97316] leading-relaxed selection:bg-orange-500/30">{$bodyStartCode}</textarea>
+                      class="w-full p-4 rounded-xl bg-[#090d16] border border-[#1e293b] text-white font-mono text-xs focus:outline-none focus:border-[#fb326f] leading-relaxed selection:bg-[#fb326f]/30">{$bodyStartCode}</textarea>
         </div>
 
         <!-- 3. Closing Body Code -->
@@ -121,7 +121,7 @@ final class CustomCodeController
             </div>
             <p class="text-xs text-slate-400">Geeignet für Chat-Widgets, Analytics-Footer, Skripte und Consent-Tools.</p>
             <textarea name="body_end_code" rows="5" placeholder="<!-- z.B. <script>console.log('Heartbeat Custom JS');</script> -->"
-                      class="w-full p-4 rounded-xl bg-[#090d16] border border-[#1e293b] text-white font-mono text-xs focus:outline-none focus:border-[#f97316] leading-relaxed selection:bg-orange-500/30">{$bodyEndCode}</textarea>
+                      class="w-full p-4 rounded-xl bg-[#090d16] border border-[#1e293b] text-white font-mono text-xs focus:outline-none focus:border-[#fb326f] leading-relaxed selection:bg-[#fb326f]/30">{$bodyEndCode}</textarea>
         </div>
 
         <!-- Footer Actions -->
@@ -129,7 +129,7 @@ final class CustomCodeController
             <a href="/admin" class="px-4 py-2.5 rounded-xl bg-[#141e33] hover:bg-[#1e293b] text-xs text-slate-300 hover:text-white transition">
                 Abbrechen
             </a>
-            <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-semibold shadow-lg shadow-orange-500/20 transition flex items-center space-x-1.5">
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#fb326f] hover:bg-[#e01e5a] text-white text-xs font-semibold shadow-lg shadow-[#fb326f]/20 transition flex items-center space-x-1.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 <span>Code-Snippets speichern</span>
             </button>
